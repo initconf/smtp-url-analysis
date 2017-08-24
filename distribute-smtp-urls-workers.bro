@@ -146,8 +146,6 @@ event  Phish::process_smtp_urls(c:connection, url:string)
 
 	local link  = escape_string(url) ; 
 
-	#if (OPTIMIZATION && link !in mail_links && ignore_file_types !in link && ignore_fp_links !in link && /^https:\/\// !in link )  { 
-
 	if (link !in mail_links) 
 	{
 		mail_links[link]=mail_info ; 

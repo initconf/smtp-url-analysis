@@ -16,4 +16,5 @@ Following functionality are provided by the script
 
 Detail Notes and How-to:
 
-
+1) Make sure you substitute (site.org) with your institution domain in configure-variables-in-this-file.bro 
+2) 

@@ -120,7 +120,7 @@ event http_end_entity(c: connection, is_orig: bool)
     		{
 		    	NOTICE([$note = HTTPSensitivePOST, $conn = c, $msg = message ]);
 			
-			if (/lbl\.gov/ in uentity && password_complexity(uentity))
+			if (Phish::site_domain in uentity && password_complexity(uentity))
 				NOTICE([$note = HTTP_Sensitive_Passwd, $conn = c, $msg = message ]);
     		}
 

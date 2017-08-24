@@ -87,7 +87,7 @@ event  Phish::process_smtp_urls(c:connection, url:string)
 			NOTICE([$note=Dotted_URL, $msg=fmt("Embeded IP in URL %s from  %s", link, c$id$orig_h), $conn=c]);
 		} 
 
-		if (/lbl\.gov|lbnl\.gov|lbnl\.us/ in domain && /((lbl\.gov|lbnl\.gov|lbnl\.us)(:[0-9]+|$))/ !in domain)
+		if (Phish::site_domain in domain && Phish::site_like_domain !in domain)
 		{ 
 			NOTICE([$note=BogusSiteURL, $msg=fmt("Embeded IP in URL %s from  %s", link, c$id$orig_h), $conn=c]);
 		} 
