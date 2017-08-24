@@ -33,8 +33,7 @@ type smtp_maliciousVal: record {
 };
 
         global smtp_malicious_indicators: table[string] of smtp_maliciousVal &synchronized &redef ; 
-        #####global smtp_md5hash_feed="/usr/local/bro-2.1/share/bro/site/feeds/smtp_malicious_indicators.out" &redef ; 
-        global smtp_md5hash_feed="/YURT/feeds/BRO-feeds/smtp_malicious_indicators.out" &redef ; 
+        global smtp_indicator_feed="" &redef ; 
 
 ############### feeds for flagging sender and subject which are part of log_smtp event
 
@@ -86,7 +85,7 @@ event Input::end_of_data(name: string, source: string)
 
 event bro_init() &priority=10
 {
-        Input::add_table([$source=smtp_md5hash_feed, $name="smtp_malicious_indicators", $idx=smtp_MaliciousIdx, $val=smtp_maliciousVal,  $destination=smtp_malicious_indicators,  $mode=Input::REREAD]);
+        Input::add_table([$source=smtp_indicator_feed, $name="smtp_malicious_indicators", $idx=smtp_MaliciousIdx, $val=smtp_maliciousVal,  $destination=smtp_malicious_indicators,  $mode=Input::REREAD]);
 }
 
 event SMTP::log_smtp (rec: SMTP::Info)

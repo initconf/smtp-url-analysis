@@ -7,7 +7,7 @@ export {
 		#Embedded_Malicious_URL,
 
                 SensitiveURI, 
-		Dotted_URL, 	
+		DottedURL, 	
 		Suspicious_File_URL, 
 		Suspicious_Embedded_Text, 
 		WatchedFileType, 
@@ -84,12 +84,12 @@ event  Phish::process_smtp_urls(c:connection, url:string)
 		} 
 		if (/\/([[:digit:]]{1,3}\.){3}[[:digit:]]{1,3}\// in link )
 		{ 
-			NOTICE([$note=Dotted_URL, $msg=fmt("Embeded IP in URL %s from  %s", link, c$id$orig_h), $conn=c]);
+			NOTICE([$note=DottedURL, $msg=fmt("Embeded IP in URL %s from  %s", link, c$id$orig_h), $conn=c]);
 		} 
 
-		if (Phish::site_domain in domain && Phish::site_like_domain !in domain)
+		if (Phish::site_domain in domain && Phish::site_sub_domains !in domain)
 		{ 
-			NOTICE([$note=BogusSiteURL, $msg=fmt("Embeded IP in URL %s from  %s", link, c$id$orig_h), $conn=c]);
+			NOTICE([$note=BogusSiteURL, $msg=fmt("Very similar URL to site: %s from  %s", link, c$id$orig_h), $conn=c]);
 		} 
 			
 	} 

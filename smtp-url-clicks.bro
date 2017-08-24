@@ -42,7 +42,6 @@ event Phish::w_m_url_click(link: string, mail_info: mi, c: connection)
 		{	
 			log_reporter(fmt("EVENT:  w_m_url_click : %s, mail_info: %s",link, mail_links[link] ),10);
 			log_clicked_urls(link, mail_info, c);
-			run_heuristics(link, mail_links[link], c);
 		} 
 }
 @endif 

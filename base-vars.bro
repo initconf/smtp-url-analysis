@@ -4,6 +4,9 @@ export {
 
         global log_stats: event();
 
+	global site_domain: pattern &redef ;
+        global site_sub_domains: pattern &redef ; 
+
 	#global ENABLE_DATA_BACKEND=T; 
 
         global log_reporter: function (msg: string, debug: count);
