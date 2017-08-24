@@ -1,8 +1,10 @@
-# phish-analysis-no-postgres
+# phish-analysis-no-datastore 
 
 [ These are newer bro policies to subtitue smtp-embedded-urls-cluster and smtp-embedded-urls-bloom.bro  ] 
 
 Primary scope of these bro policies is to give more insights into smtp-analysis esp to track phishing events. 
+
+This is a subset of phish-analysis repo and doesn't use any backed postgres database. So relieves the user from postgres dependency while getting basic phishing detection up and running very quickly.
 
 Following functionality are provided by the script 
 
