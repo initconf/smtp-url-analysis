@@ -74,4 +74,45 @@ again see configure-variables-in-this-file.bro for tweaking and tunning
 
 
 
-	
+3) Malicious file download 	
+
+	if a link in an email is clicked and results in a file download, this module can generate an alert of that as well. 
+
+	Example alert:
+
+1481499234.568566       CQa9SJ1adwAqlPDcKj      1.1.1.1      49067   46.43.34.31     80      FxrREO3dgcnSlAQZO8      application/x-dosexec   http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe  tcp     Phish::FileDownload     [ts=1481431889.562629, uid=CX5ROKa8g7WcfnET4, from=Bad Guy <random@gmail.com>, to=John Doe <jd@site.org>, subject=putty.exe, referrer=[]]        http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe  1.1.1.1      46.43.34.31     80      -       bro     Notice::ACTION_LOG    3600.000000     F
+
+
+4) Watch for URLs which only have IP address instead of domain names in them - another sign of maliciousness
+ - Phish::DottedURL 	
+
+1483418588.406004       CNDcli3Oo5dFqrJNhi      198.124.252.166 46134   128.3.41.120    25      -       -       -       tcp     Phish::DottedURL        Embeded IP in URL http://183.81.171.242/c.jpg from  198.124.252.166     -       198.124.252.166 128.3.41.120 25       -       bro     Notice::ACTION_LOG      3600.000000     F
+
+
+5) Phish::SensitiveURI
+
+sample alert:
+
+1351714828.429308       CAmJxI1WlO5E5bWxCj      128.3.41.133    1277    209.139.197.113 25      -       -       -       tcp     Phish::SensitiveURI     Suspicious text embeded in URL http://www.foxterciaimobiliaria.com.br/corretor/565/ from  CAmJxI1WlO5E5bWxCj -128.3.41.133    209.139.197.113 25      -       bro     Notice::ACTION_LOG      3600.000000     F
+
+
+Generates an Alert when a string in URL matches signature defined in "suspicious_text_in_url" available in configure-variables-in-this-file.bro 
+
+6) Phish::WatchedFileType - Simple regexp match on file extensions. 
+
+[This is a noisy notice but useful for logging.  for critical files flagging use (3) above which is malicious file download based on mime-types.] 
+
+Sample Alert: 
+
+1481431889.683598       CxGUuzDvWCpUdFI27       74.125.83.52    35030   128.3.41.120    25      -       -       -       tcp     Phish::WatchedFileType  Suspicious filetype embeded in URL http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe from  74.125.83.52 -74.125.83.52    128.3.41.120    25      -       bro     Notice::ACTION_LOG      3600.000000     F
+
+
+7) Phish::HTTPSensitivePOST is generated when a URL in an email is clicked and results in a HTTP Post request. Often this is how passwords are transmitted on phishing sites. 
+
+Notice in alert below: username=me@me.com&tel=me&password=me 
+
+1449085047.857802       COuvQB1n4JF3MILQUa      128.3.10.69     57106   67.227.172.217  80      -       -       -       tcp     Phish::HTTPSensitivePOST        Request: /cli/viewd0cument.dropboxxg.20gbfree.secure.verfy.l0gin.user0984987311111-config-l0gin-verfy.user763189713835763/validate.php - Data: type=G+Mail&username=me@me.com&tel=me&password=me&frmLogin:btnLogin1=&frmLogin:btnLogin1=      -       128.3.10.69     67.227.172.217  80      -       bro     Notice::ACTION_LOG      3600.000000     F
+
+
+
+
