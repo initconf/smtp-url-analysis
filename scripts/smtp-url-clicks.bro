@@ -88,12 +88,12 @@ function check_smtpurl_in_http( rec: HTTP::Info)
 
 	if (link_in_bloom) { 
 		process_link_in_bloom(link, c); 
-                log_reporter(fmt("check_smtpurl_in_http BLOOM LINK: %s", link),0);
+                log_reporter(fmt("check_smtpurl_in_http BLOOM LINK: %s", link),10);
 		is_link_clicked = T ; 
 	} 
         else if (link in mail_links) {
 		# send to manager for processing 
-                log_reporter(fmt("check_smtpurl_in_http ACTIVE LINK: %s", link),0);
+                log_reporter(fmt("check_smtpurl_in_http ACTIVE LINK: %s", link),10);
                 event Phish::w_m_url_click(link, Phish::mail_links[link], c);
 		is_link_clicked = T ; 
         }

@@ -15,7 +15,6 @@ event file_state_remove(f: fa_file) &priority=-3
 {
 
 	#log_reporter(fmt("EVENT: file_state_remove: VARS: f: %s", f),10); 
-	log_reporter(fmt("EVENT: file_state_remove: VARS: f: %s", f),0); 
 
 	#print fmt("INSIDE FILE DOWNLOAD SECTION"); 
 	#print fmt("%s", f$source); 
