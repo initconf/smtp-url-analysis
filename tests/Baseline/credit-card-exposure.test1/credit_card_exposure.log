@@ -1,0 +1,14 @@
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	credit_card_exposure
+#open	2017-06-06-19-50-15
+#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	cc	bank.typ	bank.name	data
+#types	time	string	addr	port	addr	port	string	string	string	string
+1456249776.003605	CHhAvVGS1DHFjwGM9	192.168.21.95	53397	23.73.171.221	80	XXXXXXXXXXXXXXX	Amex	AMEX SMALL CORPORATE CARD	an Express Corporate</td>\x0a<td rowspan="X" colspan="X" width="XXXpx" class="whsX">\x0a<p class=CellBody>378734493671000</td></tr>\x0a<tr><td rowspan="X" colspan="X" width="XXXpx" class="whsX">\x0a<p class=CellB
+1456249776.003605	CHhAvVGS1DHFjwGM9	192.168.21.95	53397	23.73.171.221	80	XXXXXXXXXXXXXXX	AMEX	(empty)	ody>American Express</td>\x0a<td rowspan="X" colspan="X" width="XXXpx" class="whsX">\x0a<p class=CellBody>371449635398431</td></tr>\x0a<tr><td rowspan="X" colspan="X" width="XXXpx" class="whsX">\x0a<p class=CellB
+1456249776.003605	CHhAvVGS1DHFjwGM9	192.168.21.95	53397	23.73.171.221	80	XXXXXXXXXXXXXXX	Amex	AMEX SMALL CORPORATE CARD	ody>American Express</td>\x0a<td rowspan="X" colspan="X" width="XXXpx" class="whsX">\x0a<p class=CellBody>378282246310005</td></tr>\x0a<tr><td rowspan="X" colspan="X" width="XXXpx" class="whsX">\x0a<p class=CellB
+1456249776.003607	CHhAvVGS1DHFjwGM9	192.168.21.95	53397	23.73.171.221	80	XXXXXXXXXXXXXXXX	-	-	=CellBody>MasterCard</td>\x0a<td rowspan="X" colspan="X" width="XXXpx" class="whsX">\x0a<p class=CellBody>5555555555554444</td></tr>\x0a<tr><td rowspan="X" colspan="X" width="XXXpx" class="whsX">\x0a<p class=Cell
+1456249776.003607	CHhAvVGS1DHFjwGM9	192.168.21.95	53397	23.73.171.221	80	XXXXXXXXXXXXXXXX	-	-	ss=CellBody>Discover</td>\x0a<td rowspan="X" colspan="X" width="XXXpx" class="whsX">\x0a<p class=CellBody>6011111111111117</td></tr>\x0a<tr><td rowspan="X" colspan="X" width="XXXpx" class="whsX">\x0a<p class=Cell
+#close	2017-06-06-19-50-15

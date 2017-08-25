@@ -1,0 +1,10 @@
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	reporter
+#open	2017-08-25-07-45-01
+#fields	ts	level	message	location
+#types	time	enum	string	string
+0.000000	Reporter::WARNING	/YURT/feeds/BRO-feeds/smtp_malicious_indicators.out/Input::READER_ASCII: Init: cannot open /YURT/feeds/BRO-feeds/smtp_malicious_indicators.out	(empty)
+#close	2017-08-25-07-45-01

@@ -1,0 +1,2 @@
+bro -r $TRACES/SensitiveURI.pcap ../../../scripts /Users/aashish/code/smtp-url-analysis-no-db/tests/.tmp/smtp-url-analysis-no-db.test4/test4.bro (expect success)
+btest-diff notice.log (expect success)

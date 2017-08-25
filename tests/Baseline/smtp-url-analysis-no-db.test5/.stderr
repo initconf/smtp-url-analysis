@@ -1,0 +1,2 @@
+warning in /usr/local/bro-2.5.1/share/bro/base/init-bare.bro, line 1: problem initializing NB-DNS: connect(0.0.0.0): Address family not supported by protocol family
+warning: /YURT/feeds/BRO-feeds/smtp_malicious_indicators.out/Input::READER_ASCII: Init: cannot open /YURT/feeds/BRO-feeds/smtp_malicious_indicators.out

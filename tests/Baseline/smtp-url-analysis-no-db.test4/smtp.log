@@ -1,0 +1,10 @@
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	smtp
+#open	2017-08-25-07-45-00
+#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	trans_depth	helo	mailfrom	rcptto	date	from	to	cc	reply_to	msg_id	in_reply_to	subject	x_originating_ip	first_received	second_received	last_reply	path	user_agent	tls	fuids
+#types	time	string	addr	port	addr	port	count	string	string	set[string]	string	string	set[string]	set[string]	string	string	string	string	addr	string	string	string	vector[addr]	string	bool	vector[string]
+1351714828.292400	CHhAvVGS1DHFjwGM9	128.3.41.133	1277	209.139.197.113	25	1	fe1.lbl.gov	asharma@lbl.gov	is-spam@labs.sophos.com	Wed, 31 Oct 2012 13:20:16 -0700	Aashish Sharma <asharma@lbl.gov>	spam@lbl.gov	-	-	<20121031202012.GF20919@yaksha.lbl.gov>	-	=?iso-8859-1?Q?=5Bgarrido=2Efoxter=40gmail?= =?iso-8859-1?Q?=2Ecom=3A_O_DUE_CONCEPT_est=E1?= chegando!]	-	from yaksha.lbl.gov (f0-4d-a2-28-3c-de.dhcp.lbl.gov. [128.3.11.246])        by mx.google.com with ESMTPS id zv10sm2760749pbc.76.2012.10.31.13.20.18        (version=TLSv1/SSLv3 cipher=OTHER);        Wed, 31 Oct 2012 13:20:19 -0700 (PDT)	by 10.66.90.65 with SMTP id bu1mr105234351pab.31.1351714827546;        Wed, 31 Oct 2012 13:20:27 -0700 (PDT)	250 Queued!	209.139.197.113,128.3.41.133,209.85.220.70,10.66.90.65,12.10.31.13	Mutt/1.5.21 (2010-09-15)	F	FZxCc43lnDRLs88qC8
+#close	2017-08-25-07-45-00

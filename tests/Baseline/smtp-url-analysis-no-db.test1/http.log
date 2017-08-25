@@ -1,0 +1,10 @@
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	http
+#open	2017-08-25-07-39-36
+#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	trans_depth	method	host	uri	referrer	version	user_agent	request_body_len	response_body_len	status_code	status_msg	info_code	info_msg	tags	username	password	proxied	orig_fuids	orig_filenames	orig_mime_types	resp_fuids	resp_filenames	resp_mime_types
+#types	time	string	addr	port	addr	port	count	string	string	string	string	string	string	count	count	count	string	count	string	set[enum]	string	string	set[string]	vector[string]	vector[string]	vector[string]	vector[string]	vector[string]	vector[string]
+1481499233.227520	ClEkJM2Vm5giqnMf4h	128.3.5.17	49067	46.43.34.31	80	1	GET	the.earth.li	/~sgtatham/putty/0.67/x86/putty.exe	-	1.1	Wget/1.11.4 Red Hat modified	0	531368	200	OK	-	-	(empty)	-	-	-	-	-	-	FxrREO3dgcnSlAQZO8	-	application/x-dosexec
+#close	2017-08-25-07-39-36

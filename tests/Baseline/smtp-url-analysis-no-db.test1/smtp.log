@@ -1,0 +1,10 @@
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	smtp
+#open	2017-08-25-07-39-36
+#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	trans_depth	helo	mailfrom	rcptto	date	from	to	cc	reply_to	msg_id	in_reply_to	subject	x_originating_ip	first_received	second_received	last_reply	path	user_agent	tls	fuids
+#types	time	string	addr	port	addr	port	count	string	string	set[string]	string	string	set[string]	set[string]	string	string	string	string	addr	string	string	string	vector[addr]	string	bool	vector[string]
+1481431889.562629	CHhAvVGS1DHFjwGM9	74.125.83.52	35030	128.3.41.120	25	1	mail-pg0-f52.google.com	aashish043@gmail.com	asharma@lbl.gov	Sat, 10 Dec 2016 20:51:27 -0800	Aashish Sharma <aashish043@gmail.com>	Aashish Sharma <asharma@lbl.gov>	-	-	<545B441D-2E2E-428D-8EF6-10DDA0EB723A@gmail.com>	-	putty.exe	-	from ?IPv6:2601:203:4180:730:d143:e42f:3b66:781e? ([2601:203:4180:730:d143:e42f:3b66:781e])        by smtp.gmail.com with ESMTPSA id h185sm26347354pfg.90.2016.12.10.20.51.28        for <asharma@lbl.gov>        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);        Sat, 10 Dec 2016 20:51:28 -0800 (PST)	by mail-pg0-f52.google.com with SMTP id p66so22801736pga.2        for <asharma@lbl.gov>; Sat, 10 Dec 2016 20:51:29 -0800 (PST)	250 ok:  Message 58283528 accepted	128.3.41.120,74.125.83.52,2601:203:4180:730:d143:e42f:3b66:781e	Apple Mail (2.3226)	F	F39Fuq740H5pEMgpk,FAfnf41Deb4YV8HYm9
+#close	2017-08-25-07-39-36

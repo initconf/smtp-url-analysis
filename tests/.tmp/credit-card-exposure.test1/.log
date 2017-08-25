@@ -1,0 +1,1 @@
+bro -r $TRACES/credit-cards.pcap ../../../scripts /Users/aashish/code/smtp-url-analysis-no-db/tests/.tmp/credit-card-exposure.test1/test1.bro (expect success)

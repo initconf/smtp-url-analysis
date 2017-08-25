@@ -1,0 +1,12 @@
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	reporter
+#open	2017-08-25-07-42-02
+#fields	ts	level	message	location
+#types	time	enum	string	string
+0.000000	Reporter::WARNING	/YURT/feeds/BRO-feeds/smtp_malicious_indicators.out/Input::READER_ASCII: Init: cannot open /YURT/feeds/BRO-feeds/smtp_malicious_indicators.out	(empty)
+1449081495.794583	Reporter::INFO	check_smtpurl_in_http ACTIVE LINK: http://proposito.net/cli/viewd0cument.dropboxxg.20gbfree.secure.verfy.l0gin.user0984987311111-config-l0gin-verfy.user763189713835763.htm	bro
+1449085026.214280	Reporter::INFO	check_smtpurl_in_http ACTIVE LINK: http://proposito.net/cli/viewd0cument.dropboxxg.20gbfree.secure.verfy.l0gin.user0984987311111-config-l0gin-verfy.user763189713835763.htm	bro
+#close	2017-08-25-07-42-02
