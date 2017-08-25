@@ -108,7 +108,7 @@ Malicious file download: If a link in an email is clicked and results in a file 
 	1481499234.568566       CQa9SJ1adwAqlPDcKj      1.1.1.1      49067   46.43.34.31     80      FxrREO3dgcnSlAQZO8      application/x-dosexec   http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe  tcp     Phish::FileDownload     [ts=1481431889.562629, uid=CX5ROKa8g7WcfnET4, from=Bad Guy <random@gmail.com>, to=John Doe <jd@site.org>, subject=putty.exe, referrer=[]]        http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe  1.1.1.1      46.43.34.31     80      -       bro     Notice::ACTION_LOG    3600.000000     F
 
 
-Exampel Alert: Phish::DottedURL 	
+Example Alert: Phish::DottedURL 	
 -------------------------------
 Watch for URLs which only have IP address instead of domain names in them - another sign of maliciousness
 
@@ -140,3 +140,29 @@ This is generated when a URL in an email is clicked and results in a HTTP Post r
 
 	Notice in alert below: username=me@me.com&tel=me&password=me 
 
+
+=========================
+Logging
+=========================
+
+This module should generate two different logs
+	- smtpurl_links.log  
+	- smtp_clicked_urls.log 
+
+smtpurl_links.log 
+-----------------
+This is a log of all URLs extracted from emails. A sample looks like this
+	
+
+
+
+
+smtp_clicked_urls.log 
+---------------------
+This is log of URLs from email which are 'clicked' on - ie which are later seen by the HTTP analyzer.
+
+	#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	host	url	mail_ts	mail_uid	from	to	subject	referrer
+	#types	time	string	addr	port	addr	port	string	string	time	string	string	string	string	string
+
+	1449081495.794583	CtxTCR2Yer0FR1tIBg	131.243.195.188	61291	67.227.172.217	80	proposito.net	http://proposito.net/cli/viewd0cument.dropboxxg.20gbfree.secure.verfy.l0gin.user0984987311111-config-l0gin-verfy.user763189713835763.htm	1449081435.863394	CHhAvVGS1DHFjwGM9	Maggie Stoeva <mstoe101@gmail.com>	undisclosed-recipients:;	(2) Important Document from Maggie Stoeva	(empty)
+	1449085026.214280	CPhDKt12KQPUVbQz06	128.3.10.69	57064	67.227.172.217	80	proposito.net	http://proposito.net/cli/viewd0cument.dropboxxg.20gbfree.secure.verfy.l0gin.user0984987311111-config-l0gin-verfy.user763189713835763.htm	1449081435.863394	CHhAvVGS1DHFjwGM9	Maggie Stoeva <mstoe101@gmail.com>	undisclosed-recipients:;	(2) Important Document from Maggie Stoeva	(empty)
