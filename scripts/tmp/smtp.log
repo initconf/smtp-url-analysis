@@ -1,0 +1,10 @@
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	smtp
+#open	2017-08-25-03-09-24
+#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	trans_depth	helo	mailfrom	rcptto	date	from	to	cc	reply_to	msg_id	in_reply_to	subject	x_originating_ip	first_received	second_received	last_reply	path	user_agent	tls	fuids
+#types	time	string	addr	port	addr	port	count	string	string	set[string]	string	string	set[string]	set[string]	string	string	string	string	addr	string	string	string	vector[addr]	string	bool	vector[string]
+1483418585.527258	CGOvhr4kdvDOd6hqs5	198.124.252.166	46134	128.3.41.120	25	1	nmx1.es.net	Dee40@5113.com	esnet-routing@lists.lbl.gov	Tue, 3 Jan 2017 06:43:03 +0200	Dee Evans <Dee40@5113.com>	routing@es.net	-	-	<06169345871969.1444.qmail@vgewnw>	-	Invoice #06169	-	(qmail 06169 invoked by uid 061); 3 Jan 2017 06:43:01 +0200	from vyrhm ([56.238.173.60]) by 5113.com with MailEnable ESMTP; Tue, 3 Jan 2017 06:43:03 +0200	250 ok:  Message 59796612 accepted	128.3.41.120,198.124.252.166,46.219.62.132,56.238.173.60	-	F	FtJGlf37rovUuWnomb,FQPFgCqHIDaUsdHGj
+#close	2017-08-25-03-09-29
