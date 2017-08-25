@@ -136,7 +136,7 @@ Simple regexp match on file extensions.  This is a noisy notice but useful for l
 	1481431889.683598       CxGUuzDvWCpUdFI27       74.125.83.52    35030   128.3.41.120    25      -       -       -       tcp     Phish::WatchedFileType  Suspicious filetype embeded in URL http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe from  74.125.83.52 -74.125.83.52    128.3.41.120    25      -       bro     Notice::ACTION_LOG      3600.000000     F
 
 
-Example Alert: HTTPSensitivePOST
+Example Alert: SensitivePOST
 ********************************
 
 This is generated when a URL in an email is clicked and results in a HTTP Post request. Often this is how passwords are transmitted on phishing sites.
@@ -146,6 +146,13 @@ This is generated when a URL in an email is clicked and results in a HTTP Post r
 
 	Notice in alert below: username=me@me.com&tel=me&password=me
 
+Example Alert: SensitivePassword 
+********************************
+Alert is triggered when a password transmitted in HTTP SensitivePost is associated with a username related to sites' domain and the password meets the site's password complexity. 
+
+	1467998894.642754       Ce3m7XMMIuScmhJu9       128.3.2.5    64310   104.16.58.61    80      -       -       -       tcp     HTTP::SensitivePasswd   Request: /electacta/login_action.asp - Data: username=blach@lbl.gov&password=Popiszcze$11&rememberMe=on&role=editor&bypass=&rememberUser=1&ignoreWarning=0       -       128.3.2.5    104.16.58.61    80      -       bro     Notice::ACTION_LOG      3600.000000     F
+
+	
 
 =========================
 Logging
@@ -169,4 +176,3 @@ This is log of URLs from email which are 'clicked' on - ie which are later seen 
 
 	1449081495.794583	CtxTCR2Yer0FR1tIBg	131.243.195.188	61291	67.227.172.217	80	proposito.net	http://proposito.net/cli/viewd0cument.dropboxxg.20gbfree.secure.verfy.l0gin.user0984987311111-config-l0gin-verfy.user763189713835763.htm	1449081435.863394	CHhAvVGS1DHFjwGM9	Maggie Stoeva <mstoe101@gmail.com>	undisclosed-recipients:;	(2) Important Document from Maggie Stoeva	(empty)
 	1449085026.214280	CPhDKt12KQPUVbQz06	128.3.10.69	57064	67.227.172.217	80	proposito.net	http://proposito.net/cli/viewd0cument.dropboxxg.20gbfree.secure.verfy.l0gin.user0984987311111-config-l0gin-verfy.user763189713835763.htm	1449081435.863394	CHhAvVGS1DHFjwGM9	Maggie Stoeva <mstoe101@gmail.com>	undisclosed-recipients:;	(2) Important Document from Maggie Stoeva	(empty)
-

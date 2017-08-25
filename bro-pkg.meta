@@ -3,3 +3,4 @@ description=Suite of smtp related policies includes extracting and logging URLs 
 script_dir = scripts
 version = 0.1 
 tags = smtp, phish, urls, emails
+test_command = ( cd tests && btest -d )

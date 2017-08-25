@@ -1,2 +1,1 @@
-bro -r $TRACES/DottedURL.pcap ../../../scripts /Users/aashish/code/smtp-url-analysis-no-db/tests/.tmp/smtp-url-analysis-no-db.test6/test6.bro (expect success)
-btest-diff notice.log (expect success)
+bro -r $TRACES/DottedURL.pcap ../../../scripts /home/bro/bro-cpp/cluster4.lbl.gov/host/policies/smtp-url-analysis-no-db/tests/.tmp/smtp-url-analysis-no-db.test6/test6.bro (expect success)

@@ -9,8 +9,8 @@ module HTTP;
 export {
 	redef enum Notice::Type += {
 		#### Sensitive POST seen
-		HTTPSensitivePOST,
-		HTTP_Sensitive_Passwd,
+		SensitivePOST,
+		SensitivePasswd,
 	};
 
     # Regular expression to match (unescaped) POST body
@@ -118,15 +118,15 @@ event http_end_entity(c: connection, is_orig: bool)
 		local message=fmt("Request: %s - Data: %s", POST_requests[c$uid], uentity);
 		if ( |uentity| <= BadPOSTLength && BadPOSTBody in uentity )
     		{
-		    	NOTICE([$note = HTTPSensitivePOST, $conn = c, $msg = message ]);
+		    	NOTICE([$note = HTTP::SensitivePOST, $conn = c, $msg = message ]);
 			
 			if (Phish::site_domain in uentity && password_complexity(uentity))
-				NOTICE([$note = HTTP_Sensitive_Passwd, $conn = c, $msg = message ]);
+				NOTICE([$note = HTTP::SensitivePasswd, $conn = c, $msg = message ]);
     		}
 
 		if ( c$id$resp_h in Phish::track_post_requests ) 
 		{
-			NOTICE([$note=Phish::HTTPSensitivePOST, $msg=message, $conn=c]);
+			NOTICE([$note=HTTP::SensitivePOST, $msg=message, $conn=c]);
 		} 
 
     }

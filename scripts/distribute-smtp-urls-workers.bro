@@ -59,6 +59,7 @@ function mail_links_expire_func(t: table[string] of mi, link: string): interval
 	} 
 @endif 
 
+# code to expire links and add them to the bloomfilter 
 @if (( Cluster::is_enabled() && Cluster::local_node_type() == Cluster::MANAGER )|| ! Cluster::is_enabled() )
 function mail_links_expire_func(t: table[string] of mi, link: string): interval 
 	{
@@ -70,10 +71,10 @@ function mail_links_expire_func(t: table[string] of mi, link: string): interval
 	local seen = bloomfilter_lookup(mail_links_bloom, link);
 	
 	if  ( seen > 0 ) 
-		{ 
-			log_reporter(fmt("mail_links_expire_func: bloomed link : %s, %s",link, t[link]),0); 
-			return 0 secs ; 
-		} 
+	{ 
+		log_reporter(fmt("mail_links_expire_func: bloomed link : %s, %s",link, t[link]),0); 
+		return 0 secs ; 
+	} 
 
 	### There is not much value to store urls with uninteresting_fqdn into the database either 
 	### or may be there is but still slight more optimization . Disable if not desired
@@ -130,12 +131,11 @@ event  Phish::process_smtp_urls(c:connection, url:string)
 	local to_list="" ; 
 
 	if (c?$smtp && c$smtp?$to) 
-		{
+	{
 		for (to in c$smtp$to) { to_list += fmt ("%s", to); }
-		} 
+	} 
 
 	local mail_info: mi ; 
-	#mail_info$referrer=set() &mergeable ; 
 
 	mail_info$ts = c$smtp$ts ; 
 	mail_info$uid= c$smtp?$uid ? fmt("%s", c$smtp$uid) : "" ; 
