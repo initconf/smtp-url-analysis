@@ -1,13 +1,8 @@
 module Phish; 
 
-#@load smtp-encoded-subject.bro  
-
-#####redef SMTP::generate_md5 += /application\/*/;
-
 export { 
 	
 	redef enum Notice::Type += {
-                ##### Indicates that an MD5 sum was calculated for an HTTP response body.
                 Malicious_MD5,
                 Malicious_Attachment,
                 Malicious_Indicator,
@@ -17,7 +12,7 @@ export {
 		Malicious_reply_to,
 		Malicious_subject,
 		Malicious_rcptto,
-		Malicious_path,
+		Malicious_Path,
 		Malicious_Decoded_Subject, 
 	}; 
 
@@ -25,21 +20,20 @@ type smtp_MaliciousIdx: record {
         indicator: string; 
 };
 
-# md5sum	description 
-
 type smtp_maliciousVal: record {
         indicator: string; 
         description: string &optional &default="null";
 };
 
         global smtp_malicious_indicators: table[string] of smtp_maliciousVal &synchronized &redef ; 
-        global smtp_indicator_feed="" &redef ; 
 
-############### feeds for flagging sender and subject which are part of log_smtp event
+	# feeds for flagging sender and subject which are part of log_smtp event
+        global smtp_indicator_feed= fmt ("%s/feeds/smtp_malicious_indicators.out",@DIR);  
+
+} 
 
 hook Notice::policy(n: Notice::Info)
 {
-
            if ( n$note == Phish::Malicious_MD5)
                  add n$actions[Notice::ACTION_EMAIL];
 
@@ -71,16 +65,9 @@ hook Notice::policy(n: Notice::Info)
                  add n$actions[Notice::ACTION_EMAIL];
 }
 
-} ##### end of export 
-
-#event Input::update_finished(name: string, source: string)                                                         
 event Input::end_of_data(name: string, source: string)                                                         
 {                                                                         
-
 	log_reporter(fmt("EVENT: Input::update_finished: VARS: name: %s, source: %s", name, source),10);
-
-        #print fmt("digested  %s records in smtp_malicious_indicators", |smtp_malicious_indicators|);
-        #####print smtp_malicious_indicators;                                                 
 } 
 
 event bro_init() &priority=10
@@ -90,7 +77,6 @@ event bro_init() &priority=10
 
 event SMTP::log_smtp (rec: SMTP::Info)
 { 
-
 	log_reporter(fmt("EVENT: SMTP::log_smtp: VARS: rec: %s", rec),10); 
 
 	if ( ! connection_exists(rec$id) )
@@ -104,10 +90,8 @@ event SMTP::log_smtp (rec: SMTP::Info)
 		for (rcptto in rec$rcptto)
 		{ 
 			rcptto =  strip(gsub(rcptto, pat, "")); 
-			#####print fmt ("rcpt_to: %s", rcptto); 
 			if ( rcptto in smtp_malicious_indicators )
 			{
-				#####print fmt ("DDDDD: reciept to is %s", rcptto ); 
 			       NOTICE([$note=Malicious_rcptto, $msg=fmt("Malicious rectto :: %s, %s", smtp_malicious_indicators[rcptto], rcptto), $conn=c, $sub=rcptto, $identifier=cat(rcptto),$suppress_for=1 mins]);
 			}
 		} 
@@ -116,7 +100,6 @@ event SMTP::log_smtp (rec: SMTP::Info)
 	if (rec?$to) { 
 		for (to in rec$to) { 
 			to =  strip(gsub(to, pat, "")); 
-			#####print fmt ("to: %s", to) ; 
 			if(to in smtp_malicious_indicators) { 
 			  NOTICE([$note=Malicious_Mailto, $msg=fmt("Malicious to:: %s, %s", smtp_malicious_indicators[to], to), $conn=c, $sub=to, $identifier=cat(to),$suppress_for=1 mins]);
 			} 
@@ -129,15 +112,12 @@ event SMTP::log_smtp (rec: SMTP::Info)
 		local mailfrom=strip(gsub(rec$mailfrom, pat, ""));
 		if (mailfrom in smtp_malicious_indicators )
 		{ 
-			#####print fmt ("mailfrom: %s", rec$mailfrom) ; 
 			NOTICE([$note=Malicious_Mailfrom, $msg=fmt("Malicious MailFrom :: %s, %s", smtp_malicious_indicators[mailfrom], rec$mailfrom), $conn=c, $sub=rec$mailfrom, $identifier=cat(rec$mailfrom),$suppress_for=1 mins]);
 		} 
 	} 
 
 	if ( rec?$from ) 
 	{ 
-		#####print fmt ("from: %s", rec$from); 
-
 		if (rec$from in smtp_malicious_indicators) 
 		{ 
 		NOTICE([$note=Malicious_from, $msg=fmt("Malicious Sender :: %s, %s", smtp_malicious_indicators[rec$from],  rec$from), $conn=c, $sub=rec$from, $identifier=cat(rec$from),$suppress_for=1 mins]);
@@ -157,23 +137,56 @@ event SMTP::log_smtp (rec: SMTP::Info)
 
 #	if (rec?$decoded_subject && rec$decoded_subject in smtp_malicious_indicators) 
 #        { 
-#                #####print fmt ("decoded subject: %s", rec$decoded_subject); 
 #                NOTICE([$note=Malicious_Decoded_Subject, $msg=fmt("Known Malicious Decoded Subject:: %s %s, %s, %s", smtp_malicious_indicators[rec$decoded_subject], rec$decoded_subject, rec$from, rec$to), 
 #                                                                $conn=c, $sub=rec$decoded_subject, $identifier=cat(rec$decoded_subject),$suppress_for=1 mins]);
 #        } 
 
 
+
+
 ##### path is a vector of addr 
-#	if (rec?$path)
-#	{ 
-#	 	for (path in rec$path)
-#		{ 
-#			#####print fmt ("path :%s", |path-1|) ; 
-#			if (/path/ in smtp_malicious_indicators) { 
-#				NOTICE([$note=Malicious_path, $msg=fmt("Malicious Path:: %s %s", smtp_malicious_indicators[path], path), $conn=c, $sub=path, $identifier=cat(path),$suppress_for=1 mins]);
-#			} 
-#		} 
-#	} 
+	if (rec?$path)
+	{
+		for (path in rec$path)
+		{ 
+			local ip = fmt ("%s",rec$path[path]); 
+			if (ip in smtp_malicious_indicators) { 
+				NOTICE([$note=Malicious_Path, $msg=fmt("Blacklisted IP in smtp relay Path: %s %s", smtp_malicious_indicators[ip], ip), $conn=c, $sub=ip, $identifier=cat(ip),$suppress_for=1 mins]);
+			} 
+		} 
+	} 
 
 }  ##### end of policy 
+
+
+event file_state_remove(f: fa_file) &priority=-3
+{
+
+        #log_reporter(fmt("EVENT: file_state_remove: VARS: f: %s", f),10);
+
+        #print fmt("INSIDE FILE DOWNLOAD SECTION");
+        #print fmt("%s", f$source);
+
+        if (f$source != "SMTP" )
+                return;
+
+        local rec: SMTP::Info ;
+
+        for (c in f$conns)
+        {
+                rec = f$conns[c]$smtp;
+
+                if (f$info?$filename && f$info$filename in smtp_malicious_indicators ) 
+                 {
+                        local cc = lookup_connection(rec$id);
+			local _msg = fmt ("Malicious attachment"); 
+                        local fi = f$info;
+                        local n: Notice::Info = Notice::Info($note=Malicious_Attachment, $msg=_msg, $sub=f$info$filename, $conn=cc);
+                        Notice::populate_file_info(f, n);
+                        NOTICE(n);
+                }
+        }
+
+}
+
 

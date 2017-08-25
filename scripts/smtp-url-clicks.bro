@@ -1,5 +1,4 @@
 module Phish;
-### testing
 
 export {
 
@@ -33,11 +32,9 @@ redef Cluster::worker2manager_events += /Phish::w_m_url_click/;
 
 event Phish::w_m_url_click(link: string, mail_info: mi, c: connection)
 {
+		log_reporter(fmt("EVENT: Phish::w_m_url_click: VARS: link: %s, mail_info: %s", link, mail_info),10); 
 
-	log_reporter(fmt("EVENT: Phish::w_m_url_click: VARS: link: %s, mail_info: %s", link, mail_info),10); 
-
-	 ## lets populate an expired record from the database
-
+	 	# lets populate an expired record from the database
 		if (link in mail_links)
 		{	
 			log_reporter(fmt("EVENT:  w_m_url_click : %s, mail_info: %s",link, mail_links[link] ),10);
@@ -47,7 +44,6 @@ event Phish::w_m_url_click(link: string, mail_info: mi, c: connection)
 @endif 
 
 event http_message_done(c: connection, is_orig: bool, stat: http_message_stat) &priority=-3
-#event HTTP::log_http(rec: HTTP::Info) &priority=-6
 {
 	if (is_orig)
 	{ 
@@ -70,14 +66,14 @@ function check_smtpurl_in_http( rec: HTTP::Info)
 	if (seen > 0)
 		 link_in_bloom = T ; 
 
-	### see if this HTTP URL is a 'smtp url' and of interest 
+	# see if this HTTP URL is a 'smtp url' and of interest 
 	if (!link_in_bloom && link !in mail_links) 
 		return ;
 
-	### if HTTP connection info exists 
+	# if HTTP connection info exists 
         if ( ! connection_exists(rec$id) ) {       
 		log_reporter(fmt("POTENTIAL PROBLEM: No connection_exists for %s", rec),0);
-                #return;
+                return;
         }
 
         local c = lookup_connection(rec$id);
@@ -96,19 +92,18 @@ function check_smtpurl_in_http( rec: HTTP::Info)
 		is_link_clicked = T ; 
 	} 
         else if (link in mail_links) {
-		## send to manager for processing 
+		# send to manager for processing 
                 log_reporter(fmt("check_smtpurl_in_http ACTIVE LINK: %s", link),0);
                 event Phish::w_m_url_click(link, Phish::mail_links[link], c);
 		is_link_clicked = T ; 
         }
-	else	### just a failsafe  
+	else	# just a failsafe  
 		return ; 
                 
 	
         if (is_link_clicked && (dst !in track_post_requests)) 
 	{
-                        track_post_requests[dst] = fmt ("%s clicked %s to %s", src, link, dst);
-                        #print fmt ("POST request track: %s", track_post_requests[dst]);
+        	track_post_requests[dst] = fmt ("%s clicked %s to %s", src, link, dst);
         }
 
 	if (c$http?$referrer && (link !in mail_links) && (c$http$referrer in mail_links || link_in_bloom ) )
@@ -145,6 +140,5 @@ function check_smtpurl_in_http( rec: HTTP::Info)
 
 function process_link_in_bloom(link: string, c: connection)
 {
-	### log_reporter(fmt("BLOOOOOOOMED LINK CLICKED: %s", link),0); 
 	event Phish::w_m_url_click_in_bloom(link, c); 
 } 

@@ -71,7 +71,7 @@ redef Phish::suspicious_text_in_url += /auth\.login\.php|authberkeleyedu/ ;
 #########################################################################
 
 
-redef Phish::smtp_indicator_feed = "/YURT/feeds/BRO-feeds/smtp_malicious_indicators.out" ; 
+#redef Phish::smtp_indicator_feed = "/YURT/feeds/BRO-feeds/smtp_malicious_indicators.out" ; 
 
 
 

@@ -3,6 +3,7 @@ module Phish ;
 #redef table_expire_interval = 1 secs ;
 #redef table_incremental_step=20000 ; 
 
+@load ./a.bro 
 @load ./base-vars.bro 
 
 @load ./log-smtp-urls.bro 
