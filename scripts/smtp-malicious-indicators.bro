@@ -28,7 +28,7 @@ type smtp_maliciousVal: record {
         global smtp_malicious_indicators: table[string] of smtp_maliciousVal &synchronized &redef ; 
 
 	# feeds for flagging sender and subject which are part of log_smtp event
-        global smtp_indicator_feed= fmt ("%s/feeds/smtp_malicious_indicators.out",@DIR);  
+        global smtp_indicator_feed= fmt ("%s/feeds/smtp_malicious_indicators.out",@DIR) &redef ;  
 
 } 
 

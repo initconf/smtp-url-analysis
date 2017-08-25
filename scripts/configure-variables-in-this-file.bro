@@ -57,28 +57,19 @@ redef Phish::suspicious_text_in_url += /auth\.login\.php|authberkeleyedu/ ;
 
 ############ smtp-malicious-indicators ##############
 ### A cron scraps various smtp related indicators from investigations
-### and dumps into this file to be matched with smtp traffic
-### no -need to classify indicators as sender, subject, recipient, md5 etc
+### and dumps into this file to be matched with smtp traffic no -need 
+### to classify indicators as sender, subject, recipient, md5 etc
 ### just dump all the indicators in the file below in format:
-### make sure of format: indicator<tab>description 
-### use tab as field seperator  
-##############
-#fields indicator       description
-#"At Your Service" <service@site.org>    Some random comment
-#badsender@example.com	some random comment
-#f402e0713127617bda852609b426caff	some bad hash
-#HelpDesk link	some bad subject
+### #fields indicator<tab>description 
+### see: ../scripts/feeds/smtp_malicious_indicators.out for sample 
+### you can continue populate above file or redef one below as needed 
 #########################################################################
 
-
 #redef Phish::smtp_indicator_feed = "/YURT/feeds/BRO-feeds/smtp_malicious_indicators.out" ; 
-
 
 
 ################ configure what downloads to watch for ################# 
 
 redef Phish::watch_mime_types += /application\/x-dosexec/ ; 
-
-
 
 
