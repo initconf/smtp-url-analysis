@@ -27,6 +27,17 @@ Installation
 	or
 	@load phish-analysis-no-datastore/scripts
 
+Upgrade
+-------
+	$ bro-pkg upgrade bro/initconf/smtp-url-analysis-no-db.git
+	The following packages will be UPGRADED:
+	  bro/initconf/smtp-url-analysis-no-db.git (master)
+
+	Proceed? [Y/n] y
+	Running unit tests for "bro/initconf/smtp-url-analysis-no-db.git"
+	all 7 tests successful
+	Upgraded "bro/initconf/smtp-url-analysis-no-db.git" (master)
+
 
 Detailed Notes:
 ---------------
