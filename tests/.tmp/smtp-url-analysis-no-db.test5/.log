@@ -1,1 +1,0 @@
-bro -r $TRACES/smtp-attachment.pcap ../../../scripts /Users/aashish/code/smtp-url-analysis-no-db/tests/.tmp/smtp-url-analysis-no-db.test5/test5.bro (expect success)

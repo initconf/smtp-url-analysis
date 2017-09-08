@@ -81,7 +81,7 @@ export {
 
         global ok_bulk_sender: table[string] of BulkSenderVal = table() &synchronized &redef; 
 
-	global ok_bulk_sender_ip_feed="/YURT/feeds/BRO-feeds/smtp-thresholds::ok_bulk_sender" &redef ;
+	global ok_bulk_sender_ip_feed= fmt ("%s/feeds/smtp-thresholds::ok_bulk_sender",@DIR) &redef ; 
 
 	global ignore_smtp_subjects: pattern = /phenixbb/ &redef ; 
 

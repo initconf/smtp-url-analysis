@@ -1,3 +1,0 @@
-warning in /usr/local/bro-2.5.1/share/bro/base/init-bare.bro, line 1: problem initializing NB-DNS: connect(0.0.0.0): Address family not supported by protocol family
-error in /Users/aashish/code/smtp-url-analysis-no-db/tests/.tmp/credit-card-exposure.test1/test1.bro, line 4: "redef" used but not previously defined (CreditCardExposure::use_cc_separators)
-internal warning in /Users/aashish/code/smtp-url-analysis-no-db/tests/.tmp/credit-card-exposure.test1/test1.bro, line 4: Can't document redef of CreditCardExposure::use_cc_separators, identifier lookup failed

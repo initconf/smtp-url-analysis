@@ -1,1 +1,0 @@
-bro -r $TRACES/HTTPSensitivePOST.pcap ../../../scripts /home/bro/bro-cpp/cluster4.lbl.gov/host/policies/smtp-url-analysis-no-db/tests/.tmp/smtp-url-analysis-no-db.test2/test2.bro (expect success)

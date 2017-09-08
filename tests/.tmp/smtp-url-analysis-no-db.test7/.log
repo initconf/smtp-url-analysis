@@ -1,1 +1,0 @@
-bro -r $TRACES/HTTP_SensitivePasswd.pcap ../../../scripts /Users/aashish/code/smtp-url-analysis-no-db/tests/.tmp/smtp-url-analysis-no-db.test7/test7.bro (expect success)

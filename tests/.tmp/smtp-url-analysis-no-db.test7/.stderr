@@ -1,2 +1,0 @@
-warning in /usr/local/bro-2.5.1/share/bro/base/init-bare.bro, line 1: problem initializing NB-DNS: connect(0.0.0.0): Address family not supported by protocol family
-fatal error in ./../../../scripts/__load__.bro, line 11: can't find ./email-alerts-batch.bro

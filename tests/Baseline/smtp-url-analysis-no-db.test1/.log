@@ -1,1 +1,0 @@
-bro -r $TRACES/FileDownload-example.pcap ../../../scripts /home/bro/bro-cpp/cluster4.lbl.gov/host/policies/smtp-url-analysis-no-db/tests/.tmp/smtp-url-analysis-no-db.test1/test1.bro (expect success)
