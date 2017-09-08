@@ -23,9 +23,9 @@ Following functionality are provided by the script
 
 Installation
 ------------
-	bro-pkg install initconf/phish-analysis-no-datastore
+	bro-pkg install initconf/smtp-url-analysis-no-db
 	or
-	@load phish-analysis-no-datastore/scripts
+	@load smtp-url-analysis-no-db/scripts
 
 Upgrade
 -------
