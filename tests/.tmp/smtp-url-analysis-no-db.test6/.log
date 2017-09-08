@@ -1,0 +1,1 @@
+bro -r $TRACES/DottedURL.pcap ../../../scripts /Users/aashish/code/smtp-url-analysis-no-db/tests/.tmp/smtp-url-analysis-no-db.test6/test6.bro (expect success)

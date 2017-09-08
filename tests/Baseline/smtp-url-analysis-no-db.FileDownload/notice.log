@@ -1,0 +1,12 @@
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	notice
+#open	2017-09-08-17-45-41
+#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	fuid	file_mime_type	file_desc	proto	note	msg	sub	src	dst	p	n	peer_descr	actions	suppress_for	dropped	remote_location.country_code	remote_location.region	remote_location.city	remote_location.latitude	remote_location.longitude
+#types	time	string	addr	port	addr	port	string	string	string	enum	enum	string	string	addr	addr	port	count	string	set[enum]	interval	bool	string	string	string	double	double
+1481431889.683598	CHhAvVGS1DHFjwGM9	74.125.83.52	35030	128.3.41.120	25	-	-	-	tcp	Phish::WatchedFileType	Suspicious filetype embeded in URL http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe from  74.125.83.52	-	74.125.83.52	128.3.41.120	25	-	bro	Notice::ACTION_LOG	3600.000000	F	-	-	-	-	-
+1481431889.683598	CHhAvVGS1DHFjwGM9	74.125.83.52	35030	128.3.41.120	25	-	-	-	tcp	Phish::WatchedFileType	Suspicious filetype embeded in URL http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe from  74.125.83.52	-	74.125.83.52	128.3.41.120	25	-	bro	Notice::ACTION_LOG	3600.000000	F	-	-	-	-	-
+1481499234.568566	ClEkJM2Vm5giqnMf4h	128.3.5.17	49067	46.43.34.31	80	FxrREO3dgcnSlAQZO8	application/x-dosexec	http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe	tcp	Phish::FileDownload	[ts=1481431889.562629, uid=CHhAvVGS1DHFjwGM9, from=Aashish Sharma <aashish043@gmail.com>, to= Aashish Sharma <asharma@lbl.gov> , subject=putty.exe, referrer=[]]	http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe	128.3.5.17	46.43.34.31	80	-	bro	Notice::ACTION_LOG	3600.000000	F	-	-	-	-	-
+#close	2017-09-08-17-45-41
