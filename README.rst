@@ -1,5 +1,5 @@
 ===========================
-phish-analysis-no-datastore
+smtp-url-analysis
 ===========================
 
 [ These are newer bro policies to subtitue smtp-embedded-urls-cluster and smtp-embedded-urls-bloom.bro  ]
@@ -23,20 +23,20 @@ Following functionality are provided by the script
 
 Installation
 ------------
-	bro-pkg install initconf/smtp-url-analysis-no-db
+	bro-pkg install initconf/smtp-url-analysis
 	or
-	@load smtp-url-analysis-no-db/scripts
+	@load smtp-url-analysis/scripts
 
 Upgrade
 -------
-	$ bro-pkg upgrade bro/initconf/smtp-url-analysis-no-db.git
+	$ bro-pkg upgrade bro/initconf/smtp-url-analysis.git
 	The following packages will be UPGRADED:
-	  bro/initconf/smtp-url-analysis-no-db.git (master)
+	  bro/initconf/smtp-url-analysis.git (master)
 
 	Proceed? [Y/n] y
-	Running unit tests for "bro/initconf/smtp-url-analysis-no-db.git"
+	Running unit tests for "bro/initconf/smtp-url-analysis.git"
 	all 7 tests successful
-	Upgraded "bro/initconf/smtp-url-analysis-no-db.git" (master)
+	Upgraded "bro/initconf/smtp-url-analysis.git" (master)
 
 
 Detailed Notes:
