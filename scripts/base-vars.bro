@@ -3,11 +3,11 @@ module Phish;
 export {
 
         global log_stats: event();
-
 	global site_domain: pattern &redef ;
-        global site_sub_domains: pattern &redef ; 
+        global site_sub_domains: pattern &redef ;
 
 	#global ENABLE_DATA_BACKEND=T; 
+	global OPTIMIZATION: bool = F &redef ; 
 
         global log_reporter: function (msg: string, debug: count);
 	global Phish::check_db_read_status: event(); 
@@ -45,7 +45,7 @@ function  log_reporter(msg: string, debug: count)
                 #event reporter_info(network_time(), msg, peer_description);
         #}
 
-	if (debug <= 5) {
+	if (debug <= 2) {
                 @if ( ! Cluster::is_enabled())
                         print fmt("%s", msg);
                 @endif
@@ -233,7 +233,7 @@ export {
 	global mail_links_expire_func: function(t: table[string] of mi, link: string): interval ;
 
        	#global mail_links: table [string] of mi &create_expire=EXPIRE_INTERVAL &expire_func=mail_links_expire_func  ;
-       	global mail_links: table [string] of mi &read_expire=4 hrs &expire_func=mail_links_expire_func  ;
+       	global mail_links: table [string] of mi &read_expire=400 hrs &expire_func=mail_links_expire_func  ;
 	
 	# bloom filter to store expire URLs 
  	global mail_links_bloom: opaque of bloomfilter ;

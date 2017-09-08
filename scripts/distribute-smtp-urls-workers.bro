@@ -2,19 +2,12 @@ module Phish;
 
 export {
 
-		#global mail_links_expire_func: function(t: table[string] of mi, link: string): interval ; 
-		#global mail_links: table [string] of mi &create_expire=EXPIRE_INTERVAL &expire_func=mail_links_expire_func ; 
-		#global mail_links: table [string] of mi &create_expire=0 secs &expire_func=mail_links_expire_func ; 
+	global Phish::m_w_smtpurls_add: event (link: string, mail_info: mi); 
+	global Phish::w_m_smtpurls_new: event (link: string, mail_info: mi); 
+	global Phish::m_w_add_url_to_bloom: event(link: string) ; 
+	global Phish::w_m_url_click_in_bloom: event (link: string, c: connection);  
 
-	        #global mail_links_bloom: opaque of bloomfilter ;
-
-		global Phish::m_w_smtpurls_add: event (link: string, mail_info: mi); 
-		global Phish::w_m_smtpurls_new: event (link: string, mail_info: mi); 
-
-		global Phish::m_w_add_url_to_bloom: event(link: string) ; 
-		global Phish::w_m_url_click_in_bloom: event (link: string, c: connection);  
-
-		global EXTEND_LINK_EXPIRE = 60 mins ; 
+	global EXTEND_LINK_EXPIRE = 60 mins ; 
 	
 }
 
@@ -27,43 +20,40 @@ redef Cluster::worker2manager_events += /Phish::w_m_smtpurls_new|Phish::w_m_url_
 
 @if (( Cluster::is_enabled() && Cluster::local_node_type() != Cluster::MANAGER )|| ! Cluster::is_enabled() )
 event Phish::m_w_add_url_to_bloom(link: string)
-	{
-		log_reporter(fmt("EVENT: Phish::m_w_add_url_to_bloom: added to bloomfilter - link: %s", link),10); 
-		bloomfilter_add(mail_links_bloom, link);
-	} 
+{
+	log_reporter(fmt("EVENT: Phish::m_w_add_url_to_bloom: added to bloomfilter - link: %s", link),10); 
+	bloomfilter_add(mail_links_bloom, link);
+} 
 @endif 
 
 @if (( Cluster::is_enabled() && Cluster::local_node_type() == Cluster::MANAGER )|| ! Cluster::is_enabled() )
 event Phish::w_m_url_click_in_bloom(link: string, c: connection)
-	{
-		
-		log_reporter(fmt("EVENT: Phish::w_m_url_click_in_bloom : link: %s", link),10); 
-		### extract the mail_info for the database now 
-
-		if (link !in tmp_link_cache)
-			tmp_link_cache[link] = c ; 
+{
+	log_reporter(fmt("EVENT: Phish::w_m_url_click_in_bloom : link: %s", link),10); 
+	### extract the mail_info for the database now 
+	
+	if (link !in tmp_link_cache)
+		tmp_link_cache[link] = c ; 
 
 	@ifdef (Phish::sql_read_mail_links_db) 
 		event Phish::sql_read_mail_links_db(link);
 	@endif 
 
-	}
+}
 @endif 
 
 @if ( Cluster::is_enabled() && Cluster::local_node_type() != Cluster::MANAGER )
 function mail_links_expire_func(t: table[string] of mi, link: string): interval 
-	{
-		log_reporter(fmt("EVENT: function Phish::mail_links_expire_func [ worker ] : link: %s", link),10); 
-		bloomfilter_add(mail_links_bloom, link);
-		return 0 secs ;
-	} 
+{
+	log_reporter(fmt("EVENT: function Phish::mail_links_expire_func [ worker ] : link: %s", link),10); 
+	bloomfilter_add(mail_links_bloom, link);
+	return 0 secs ;
+} 
 @endif 
 
-# code to expire links and add them to the bloomfilter 
 @if (( Cluster::is_enabled() && Cluster::local_node_type() == Cluster::MANAGER )|| ! Cluster::is_enabled() )
 function mail_links_expire_func(t: table[string] of mi, link: string): interval 
-	{
-
+{
 	log_reporter(fmt("EVENT: function Phish::mail_links_expire_func [ manager ] : link: %s", link),10); 
 	# check if seen = 0 , we don't want to rewrite an already expired entry back 
 	# into the database 
@@ -84,15 +74,15 @@ function mail_links_expire_func(t: table[string] of mi, link: string): interval
 
 	if ( seen > 0) 
 	{ 
-		log_reporter(fmt("mail_links_expire_func: uninteresting_fqdns : %s, %s",link, t[link]),0); 
-		#return 0 secs ; 
+		#log_reporter(fmt("mail_links_expire_func: uninteresting_fqdns : %s, %s",link, t[link]),0); 
+		return 0 secs ; 
 	} 
 
 
 	### no need to store https URLs either since we'd never see their clicks in HTTP 
 	if ( /^https:\/\// in link)
 	{
-		log_reporter(fmt("mail_links_expire_func: https: %s, %s",link, t[link]),0); 
+		#log_reporter(fmt("mail_links_expire_func: https: %s, %s",link, t[link]),10); 
 		return 0 secs ; 
 	}  
 
@@ -128,14 +118,26 @@ event  Phish::process_smtp_urls(c:connection, url:string)
 	if (! c?$smtp) 
 		return ;
 
+	# check to see if url is already in bloom
+	# no need to process URL further since its already in bloomfilter 
+
+	local seen = bloomfilter_lookup(mail_links_bloom, url);
+	
+        if  ( seen > 0 )
+	{	
+	      #log_reporter(fmt("EVENT: Phish::process_smtp_urls : bloomed url: %s", url),10);
+               return ; 
+	} 
+
 	local to_list="" ; 
 
 	if (c?$smtp && c$smtp?$to) 
-	{
-		for (to in c$smtp$to) { to_list += fmt ("%s", to); }
-	} 
+		{
+		for (to in c$smtp$to) { to_list += fmt (" %s ", to); }
+		} 
 
 	local mail_info: mi ; 
+	#mail_info$referrer=set() &mergeable ; 
 
 	mail_info$ts = c$smtp$ts ; 
 	mail_info$uid= c$smtp?$uid ? fmt("%s", c$smtp$uid) : "" ; 
@@ -145,6 +147,9 @@ event  Phish::process_smtp_urls(c:connection, url:string)
 	mail_info$referrer = vector(); 
 
 	local link  = escape_string(url) ; 
+
+	if (OPTIMIZATION && (ignore_file_types in link || ignore_fp_links in link || /^https:\/\// in link )  ) 
+		return ; 
 
 	if (link !in mail_links) 
 	{
@@ -158,9 +163,13 @@ event  Phish::process_smtp_urls(c:connection, url:string)
 
 @if (( Cluster::is_enabled() && Cluster::local_node_type() == Cluster::MANAGER )|| ! Cluster::is_enabled() )
 event Phish::w_m_smtpurls_new(link: string, mail_info: mi)
-	{
+{
 
-	log_reporter(fmt("EVENT: Phish::w_m_smtpurls_new: link: %s, mail_info: %s", link, mail_info),10); 
+	local seen = bloomfilter_lookup(mail_links_bloom, link);
+
+        if  ( seen > 0 )
+               return ;
+
 
 	### send to all workers 
 	event Phish::m_w_smtpurls_add (link, mail_info); 
@@ -172,22 +181,27 @@ event Phish::w_m_smtpurls_new(link: string, mail_info: mi)
 	#### between workers attempting to read/write the db
 
 	if (link !in mail_links ) 
-		{
+	{
 		#log_reporter(fmt("w_m_smtpurls_new: link: %s, mail_info: %s", link, mail_info),5); 
 		mail_links[link] = mail_info ;
-		} 
-	}
+	} 
+}
 @endif 
 
 @if (( Cluster::is_enabled() && Cluster::local_node_type() != Cluster::MANAGER )|| ! Cluster::is_enabled() )
 event Phish::m_w_smtpurls_add (link: string, mail_info: mi)
-	{
+{
 
 	log_reporter(fmt("EVENT: Phish::m_w_smtpurls_add: link: %s, mail_info: %s", link, mail_info),10); 
+	local seen = bloomfilter_lookup(mail_links_bloom, link);
+
+        if  ( seen > 0 )
+               return ;
 
 	if (link !in mail_links ) 
-		{
+	{
                	mail_links[link] = mail_info ;
-		} 
-	}
+		#log_reporter(fmt("EVENT: Phish::m_w_smtpurls_add: link: %s, mail_links[link]: %s", link, mail_links[link]),0); 
+	} 
+}
 @endif 

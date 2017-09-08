@@ -15,7 +15,6 @@ event file_state_remove(f: fa_file) &priority=-3
 {
 
 	#log_reporter(fmt("EVENT: file_state_remove: VARS: f: %s", f),10); 
-
 	#print fmt("INSIDE FILE DOWNLOAD SECTION"); 
 	#print fmt("%s", f$source); 
 
@@ -29,8 +28,10 @@ event file_state_remove(f: fa_file) &priority=-3
 	{ 
 		rec = f$conns[c]$http ; 
 		link = HTTP::build_url_http(rec);
-		
-		if (f$info?$mime_type && link in Phish::mail_links && watch_mime_types in f$info$mime_type )
+
+		local seen = bloomfilter_lookup(mail_links_bloom, link);
+
+		if (f$info?$mime_type && (link in Phish::mail_links || seen > 0 ) && watch_mime_types in f$info$mime_type )
 		 { 	 
 			local cc = lookup_connection(rec$id);
 			local _msg=fmt("%s", mail_links[link]); 

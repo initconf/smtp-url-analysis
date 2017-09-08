@@ -4,6 +4,9 @@ module Phish;
 
 ##### smtp_sensitive_uri.bro variables 
 
+	redef site_domain: pattern = /lbl\.gov|lbnl\.us|es\.net\./ &redef ;
+        redef site_sub_domains: pattern = /(lbl\.gov|lbnl\.us|es\.net\.)(:[0-9]+|$)/ &redef ;
+
 	#redef link_already_seen += { "*\.es\.net\/", "*\.jbei\.org\/"};
 
 	redef suspicious_file_types += /\.xls$|\.pdf$|\.doc$|\.docx$|\.rar$|\.exe$|\.zip$/ ; 
@@ -11,7 +14,7 @@ module Phish;
 	#redef ignore_file_types += /\.gif$|\.png$|\.jpg$|\.xml$|\.PNG$|\.jpeg$|\.css$/ ; 
 	redef ignore_file_types += /blahblhablhalblh/ ; 
 
-	redef ignore_fp_links += /GALAKA\.com|support\.proofpoint\.com/ ; 
+	redef ignore_fp_links += /\.r87\.com\/|GALAKA\.com|support\.proofpoint\.com/ ; 
 
 	### ignore alerts from emails originating from these subnets 
 	### these should be ideally subnets where your mail relays are kept 
@@ -32,14 +35,12 @@ module Phish;
 ##### for example lbl.gov, es.net etc goes here
 #### since regex cannot be compiled at runtime (yet) we need to define both variables
 ##### 
-	redef site_domain: pattern = /lbl\.gov|es\.net/ &redef ;
-        redef site_sub_domains: pattern = /(lbl\.gov|es\.net)(:[0-9]+|$)/ &redef ;
+	redef site_domain: pattern = /testing|lbl\.gov|lbnl\.us|es\.net\./ &redef ;
+        redef site_sub_domains: pattern = /.*\.(lbl\.gov|lbnl\.us|es\.net\.)(:[0-9]+|$)/ &redef ;
 
 
 ######### ignore links
 redef Phish::ignore_fp_links += /proofpoint\.com|GLAKA\.COM|groups\.google\.com\/a\/site\.org\// ;
-
-
 
 ##### suspicious links
 redef Phish::suspicious_text_in_url += /dropbox\/proposal\// ;
@@ -65,11 +66,11 @@ redef Phish::suspicious_text_in_url += /auth\.login\.php|authberkeleyedu/ ;
 ### you can continue populate above file or redef one below as needed 
 #########################################################################
 
-#redef Phish::smtp_indicator_feed = "/YURT/feeds/BRO-feeds/smtp_malicious_indicators.out" ; 
+#redef Phish::smtp_indicator_feed = "/feeds/BRO-feeds/smtp_malicious_indicators.out" ; 
 
 
 ################ configure what downloads to watch for ################# 
 
 redef Phish::watch_mime_types += /application\/x-dosexec/ ; 
 
-
+redef watch_mime_types +=       /application\/java-archive|application\/msword|application\/pdf|application\/postscript|application\/x-7z-compressed|application\/x-bittorrent|application\/x-bzip2|application\/x-dosexec|application\/x-gzip|application\/x-hdf|application\/x-shockwave-flash|application\/x-xar|application\/x-xz|application\/zip|text\/x-php/ ;

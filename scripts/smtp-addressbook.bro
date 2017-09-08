@@ -20,16 +20,10 @@ export {
 	#global AddressBook: table[string] of addressbook_rec ; 	
 	global check_addressbook_anomalies: function(sender_name: string, sender_email: string, recipient_name: string, recipient_email: string, uid: string, id: conn_id);
 	global handshake_bloom: opaque of bloomfilter ;
-	global Phish::new_smtp_rec: event (rec: SMTP::Info) ;
 	global unknown_sender: table[string] of set[string] &create_expire=5 days ; 
 	global check_for_unknown_sender: function(sender_email: string, recipient_email: string); 
 
 } 
-
-@if ( Cluster::is_enabled() )
-@load base/frameworks/cluster
-redef Cluster::worker2manager_events += /Phish::new_smtp_rec/;
-@endif
 
 function add_to_addressbook(owner_name: string, owner_email: string, entry_name: string, entry_email: string)
 {
@@ -56,28 +50,6 @@ function add_to_addressbook(owner_name: string, owner_email: string, entry_name:
 
 	}
 } 
-
-
-@if (( Cluster::is_enabled() && Cluster::local_node_type() != Cluster::MANAGER ) || ! Cluster::is_enabled())
-
-event SMTP::log_smtp(rec : SMTP::Info) &priority=-10 
-{
-
-        #log_reporter(fmt("EVENT: SMTP::log_smtp: VARS: rec: %s", rec),10);
-
-        #if (/250 ok/ !in rec$last_reply )
-        #      return ;
-
-        if (! rec?$from)
-                return ;
-
-	#check_addressbook_anomalies(rec); 
-        event Phish::new_smtp_rec(rec);
-
-
-}
-
-@endif 
 
 function check_addressbook_anomalies(sender_name: string, sender_email: string, recipient_name: string, recipient_email: string, uid: string, id: conn_id)
 {
@@ -147,9 +119,7 @@ function check_for_unknown_sender(sender_email: string, recipient_email: string)
 
 } 
 
-@if (( Cluster::is_enabled() && Cluster::local_node_type() == Cluster::MANAGER ) || ! Cluster::is_enabled())
-
-event Phish::new_smtp_rec(rec: SMTP::Info) &priority=-10 
+function Phish::process_addressbook(rec: SMTP::Info)
 {
 	#log_reporter(fmt("EVENT: Phish::w_m_smtp_rec_new : VARS: rec: %s", rec),0); 
 
@@ -209,9 +179,6 @@ event Phish::new_smtp_rec(rec: SMTP::Info) &priority=-10
 		} 
 	} 
 } 
-
-
-@endif 
 
 event bro_init()
 {
