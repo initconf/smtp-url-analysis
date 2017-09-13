@@ -306,8 +306,8 @@ function check_smtp_thresholds (rec: SMTP::Info)
 	if (/\+caf_=/ in mailfrom)
 		mailfrom = clean_sender(from); 
 
-	if (mailfrom == "") 
-		print fmt ("empty mailfrom %s -> %s", rec$mailfrom, rec$from); 
+	#if (mailfrom == "") 
+	#	print fmt ("empty mailfrom %s -> %s", rec$mailfrom, rec$from); 
 
         local clean_mf = clean_sender(mailfrom);
 

@@ -1,6 +1,8 @@
 module Phish; 
 
-#redef exit_only_after_terminate = T ; 
+
+	 #### send emails to this address
+        redef batch_notice_email = "" ;
 
 ##### smtp_sensitive_uri.bro variables 
 

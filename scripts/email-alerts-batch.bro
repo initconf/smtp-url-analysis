@@ -4,10 +4,10 @@ module Phish;
 export {
 	## Tunables
 	# How long to wait before emailing multiple message lines
-	const emailbatchdelta: interval = 30 secs &redef;
+	const emailbatchdelta: interval = 1 mins &redef;
 
 	# Where to send notification
-	const watcher: string = "ash@lbl.gov" &redef;
+	const batch_notice_email: string = "" &redef;
 
 	# Subject line (fmt() called with this and gethostname())
 	const emailsubj: string = "%s bro report" &redef;
@@ -29,7 +29,7 @@ export {
 	} ; 
 
 	global expire_alerts: function(t: table[string, addr] of alert_rec, idx: any): interval ;
-	global alerts: table[string, addr] of alert_rec &create_expire=20 secs &expire_func=expire_alerts ; 
+	global alerts: table[string, addr] of alert_rec &create_expire=1 mins &expire_func=expire_alerts ; 
 
 } 
 
@@ -87,8 +87,8 @@ function expire_alerts(t: table[string, addr] of alert_rec, idx: any): interval
 @endif
         close(f);
         local subj = fmt("[Bro] %s ", note);
-        print fmt ("Firing system command with mail -s '%s' %s < %s ; rm %s", subj, watcher, temp, temp);
-        system(fmt("mail -s '%s' %s < %s ; rm %s", subj, watcher, temp, temp));
+        print fmt ("Firing system command with mail -s '%s' %s < %s ; rm %s", subj, batch_notice_email, temp, temp);
+        system(fmt("mail -s '%s' %s < %s ; rm %s", subj, batch_notice_email, temp, temp));
 
 	return 0 secs ; 
 } 
