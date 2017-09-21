@@ -233,7 +233,7 @@ export {
 	global mail_links_expire_func: function(t: table[string] of mi, link: string): interval ;
 
        	#global mail_links: table [string] of mi &create_expire=EXPIRE_INTERVAL &expire_func=mail_links_expire_func  ;
-       	global mail_links: table [string] of mi &read_expire=400 hrs &expire_func=mail_links_expire_func  ;
+       	global mail_links: table [string] of mi &read_expire=4 hrs &expire_func=mail_links_expire_func  ;
 	
 	# bloom filter to store expire URLs 
  	global mail_links_bloom: opaque of bloomfilter ;
