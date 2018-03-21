@@ -13,7 +13,7 @@ module Phish;
 
 	redef suspicious_file_types += /\.xls$|\.pdf$|\.doc$|\.docx$|\.rar$|\.exe$|\.zip$/ ; 
 
-	redef ignore_file_types += /\.gif$|\.png$|\.jpg$|\.xml$|\.PNG$|\.jpeg$|\.css$/ ; 
+	redef ignore_file_types += /\.gif$|\.png$|\.xml$|\.PNG$|\.jpeg$|\.css$/ ; 
 
 	redef ignore_fp_links += /\.r87\.com\/|GALAKA\.com|support\.proofpoint\.com/ ; 
 
