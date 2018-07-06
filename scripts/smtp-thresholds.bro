@@ -292,6 +292,9 @@ function process_reply_to(mailfrom: string, subject: string, rec: string)
 function check_smtp_thresholds (rec: SMTP::Info)
 {
 
+	 if ( ! connection_exists(rec$id) )
+		return  ; 
+
         local c = lookup_connection(rec$id);
 
 	if  (! rec?$from &&  !rec?$mailfrom)

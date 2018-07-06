@@ -21,13 +21,14 @@ redef table_incremental_step=20000 ;
 @load ./http-sensitive_POSTs.bro
 @load ./smtp-file-download.bro
 
-#@load ./configure-variables-in-this-file-lbl.bro    
-@load ./configure-variables-in-this-file.bro    
+
 @load ./bro-done.bro 
 @load ./smtp-analysis-notice-policy.bro
 
 @load ./manager 
 @load ./smtp-thresholds.bro 
+
+@load ./configure-variables-in-this-file.bro    
 
 #@load ./smtp-notice-policies.bro 
 

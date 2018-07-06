@@ -14,6 +14,7 @@ export {
 		Malicious_rcptto,
 		Malicious_Path,
 		Malicious_Decoded_Subject, 
+		Malicious_URL, 
 	}; 
 
 type smtp_MaliciousIdx: record {
@@ -34,6 +35,9 @@ type smtp_maliciousVal: record {
 
 hook Notice::policy(n: Notice::Info)
 {
+           if ( n$note == Phish::Malicious_URL)
+                 add n$actions[Notice::ACTION_EMAIL];
+
            if ( n$note == Phish::Malicious_MD5)
                  add n$actions[Notice::ACTION_EMAIL];
 
@@ -184,3 +188,8 @@ event file_state_remove(f: fa_file) &priority=-3
 }
 
 
+event Phish::process_smtp_urls(c: connection, url: string)
+{
+        if (url in smtp_malicious_indicators) 
+			  NOTICE([$note=Malicious_URL, $msg=fmt("Malicious URL: %s, %s", url, c$smtp), $conn=c, $sub=url, $identifier=cat(url),$suppress_for=1 mins]);
+}
