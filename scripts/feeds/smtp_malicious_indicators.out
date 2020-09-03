@@ -1,7 +1,0 @@
-indicator	description
-postmaster@return--path.com	bad-mailfrom
-Ingrid Peters <ipeters@lbl.gov>	bad-sender
-ipeters@lbl.gov	bad-sender-email
-Ingrid Peters	bad-sender-name
-FY17 Performance Review Problem	bad-subject
-http://downloads.freeshare.link/24933781/e1006c/20870d7a-3f72-4da3-953b-926ee75f7926/?	bad_url
