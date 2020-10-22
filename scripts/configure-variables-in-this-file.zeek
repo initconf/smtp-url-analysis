@@ -1,12 +1,10 @@
 module SMTPurl; 
 
 
-	#### send emails to this address
+	 #### send emails to this address
         redef batch_notice_email = "" ;
 
-##### ##### ##### ##### 
-#smtp_sensitive_uri.bro variables 
-##### ##### ##### ##### 
+##### smtp_sensitive_uri.bro variables 
 
 	redef site_domain: pattern = /lbl\.gov|lbnl\.us|es\.net\./ &redef ;
         redef site_sub_domains: pattern = /(lbl\.gov|lbnl\.us|es\.net\.)(:[0-9]+|$)/ &redef ;
@@ -35,11 +33,10 @@ module SMTPurl;
 	redef suspicious_text_in_body += /[Pp][Ee][Rr][Ss][Oo][Nn][Aa][Ll] [Ee][Mm][Aa][Ll]|[Pp][Aa][Ss][Ss][Ww][Oo][Rr][Dd]|[Uu][Ss][Ee][Rr] [Nn][Aa][Mm][Ee]|[Uu][Ss][Ee][Rr][Nn][Aa][Mm][Ee]/ ; 
 
 
-##### ##### ##### ##### 
-# IMPORTANT: define your sites domains 
-#for example lbl.gov, es.net etc goes here
-#since regex cannot be compiled at runtime (yet) we need to define both variables
-##### ##### ##### ##### 
+######################### define your sites domains 
+##### for example lbl.gov, es.net etc goes here
+#### since regex cannot be compiled at runtime (yet) we need to define both variables
+##### 
 	redef site_domain: pattern = /testing|lbl\.gov|lbnl\.us|es\.net\./ &redef ;
         redef site_sub_domains: pattern = /.*\.(lbl\.gov|lbnl\.us|es\.net\.)(:[0-9]+|$)/ &redef ;
 

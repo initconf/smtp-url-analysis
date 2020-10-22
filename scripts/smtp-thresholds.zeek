@@ -497,3 +497,9 @@ event zeek_done()
 
 #fields ts      uid     id.orig_h       id.orig_p       id.resp_h       id.resp_p       trans_depth     helo    mailfrom        rcptto  date    from    to      reply_to        msg_id  in_reply_to     subject x_originating_ip        first_received  second_received last_reply
 # path    user_agent      tls     fuids
+
+#####[ts=1427120395.997709, uid=CHf8X04Ajsu5U6VNfi, id=[orig_h=209.85.213.182, orig_p=35428/tcp, resp_h=128.3.41.120, resp_p=25/tcp], trans_depth=1, helo=mail-ig0-f182.google.com, mailfrom=<acanning@lbl.gov>, rcptto={^J^I<ogut@uic.edu>^J}, date=Mon, 23 Mar 2015 08:19:54 -0600, from=Andrew Canning <acanning@lbl.gov>, to={^J^Iundisclosed-recipients:;^J}, reply_to=<uninitialized>, msg_id=<CAGovi2yaEeBLSbq9H8X+bS7uv_q3AeHdns1fmg+8inW7emT_Tg@mail.gmail.com>, in_reply_to=<uninitialized>, subject=Important document, x_originating_ip=<uninitialized>, first_received=by 10.64.149.195 with HTTP; Mon, 23 Mar 2015 07:19:54 -0700 (PDT), second_received=by igcau2 with SMTP id au2so43372030igc.0        for <ogut@uic.edu>; Mon, 23 Mar 2015 07:19:55 -0700 (PDT), last_reply=250 ok:  Message 80449324 accepted, path=[128.3.41.120, 209.85.213.182, 10.64.149.195], user_agent=<uninitialized>, tls=F, process_received_from=T, has_client_activity=T, entity=<uninitialized>, fuids=[FNNE2H1JTfy5NWzdih, FAJIAXhJWq4kaHji]]
+
+#NOTICE([$note=SMTP_Invalid_rcptto, $msg=fmt("Invalid rectto :: %s (subject=%s, from:%s)", rcptto, rec?$subject, rec$from), $conn=c, $sub=rcptto, $identifier=cat(rcptto),$suppress_for=1 mins]);
+
+

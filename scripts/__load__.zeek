@@ -25,7 +25,7 @@ redef table_incremental_step=20000 ;
 @load ./smtp-thresholds.zeek
 @load ./smtp-file-download.zeek
 
-@load ./configure-variables-in-this-file.zeek
+@load ./configure-variables-in-this-file-lbl.zeek
 
 #@load ./smtp-notice-policies 
 
