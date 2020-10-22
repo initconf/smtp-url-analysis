@@ -3,10 +3,10 @@
 #empty_field	(empty)
 #unset_field	-
 #path	files
-#open	2020-09-03-01-18-26
+#open	2020-10-22-18-32-05
 #fields	ts	fuid	tx_hosts	rx_hosts	conn_uids	source	depth	analyzers	mime_type	filename	duration	local_orig	is_orig	seen_bytes	total_bytes	missing_bytes	overflow_bytes	timedout	parent_fuid	md5	sha1	sha256	extracted	extracted_cutoff	extracted_size
 #types	time	string	set[addr]	set[addr]	set[string]	string	count	set[string]	string	string	interval	bool	bool	count	count	count	count	bool	string	string	string	string	string	bool	count
-1338190084.633070	FzKMlP3OhqPPN9b6C3	193.93.204.17	128.3.41.120	CHhAvVGS1DHFjwGM9	SMTP	3	(empty)	text/plain	-	0.000045	F	T	287	-	0	0	F	-	-	-	-	-	-	-
-1338190084.633115	FTa9Zx1NxnSZGkbnv8	193.93.204.17	128.3.41.120	CHhAvVGS1DHFjwGM9	SMTP	4	(empty)	text/html	-	0.000063	F	T	1651	-	0	0	F	-	-	-	-	-	-	-
-1338190084.633178	FkV0SM2OEy51GjB0zb	193.93.204.17	128.3.41.120	CHhAvVGS1DHFjwGM9	SMTP	5	(empty)	application/msword	Overview of Health Reform.doc	5.858879	F	T	649304	-	0	0	F	-	-	-	-	-	-	-
-#close	2020-09-03-01-18-26
+1338190084.633070	FJvSBJ3LnJx91mTTI7	193.93.204.17	128.3.41.120	CHhAvVGS1DHFjwGM9	SMTP	3	(empty)	text/plain	-	0.000045	F	T	287	-	0	0	F	-	-	-	-	-	-	-
+1338190084.633115	FahkkT3C6H4HupaLLe	193.93.204.17	128.3.41.120	CHhAvVGS1DHFjwGM9	SMTP	4	(empty)	text/html	-	0.000063	F	T	1651	-	0	0	F	-	-	-	-	-	-	-
+1338190084.633178	Fupp5U262QkIJquAE2	193.93.204.17	128.3.41.120	CHhAvVGS1DHFjwGM9	SMTP	5	(empty)	application/msword	Overview of Health Reform.doc	5.858879	F	T	649304	-	0	0	F	-	-	-	-	-	-	-
+#close	2020-10-22-18-32-05

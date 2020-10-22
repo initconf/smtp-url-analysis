@@ -3,9 +3,8 @@
 #empty_field	(empty)
 #unset_field	-
 #path	notice
-#open	2020-09-03-19-46-40
+#open	2020-10-22-18-32-01
 #fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	fuid	file_mime_type	file_desc	proto	note	msg	sub	src	dst	p	n	peer_descr	actions	suppress_for	remote_location.country_code	remote_location.region	remote_location.city	remote_location.latitude	remote_location.longitude
 #types	time	string	addr	port	addr	port	string	string	string	enum	enum	string	string	addr	addr	port	count	string	set[enum]	interval	string	string	string	double	double
 1481431889.683598	CHhAvVGS1DHFjwGM9	74.125.83.52	35030	128.3.41.120	25	-	-	-	tcp	SMTPurl::WatchedFileType	Suspicious filetype embeded in URL http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe from  74.125.83.52	-	74.125.83.52	128.3.41.120	25	-	-	Notice::ACTION_LOG	3600.000000	-	-	-	-	-
-1481431889.683598	CHhAvVGS1DHFjwGM9	74.125.83.52	35030	128.3.41.120	25	-	-	-	tcp	SMTPurl::WatchedFileType	Suspicious filetype embeded in URL http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe from  74.125.83.52	-	74.125.83.52	128.3.41.120	25	-	-	Notice::ACTION_LOG	3600.000000	-	-	-	-	-
-#close	2020-09-03-19-46-40
+#close	2020-10-22-18-32-01

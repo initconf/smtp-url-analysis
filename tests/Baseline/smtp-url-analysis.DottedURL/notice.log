@@ -3,8 +3,8 @@
 #empty_field	(empty)
 #unset_field	-
 #path	notice
-#open	2020-04-23-18-39-39
+#open	2020-10-22-18-32-00
 #fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	fuid	file_mime_type	file_desc	proto	note	msg	sub	src	dst	p	n	peer_descr	actions	suppress_for	remote_location.country_code	remote_location.region	remote_location.city	remote_location.latitude	remote_location.longitude
 #types	time	string	addr	port	addr	port	string	string	string	enum	enum	string	string	addr	addr	port	count	string	set[enum]	interval	string	string	string	double	double
-1483418588.406004	CHhAvVGS1DHFjwGM9	198.124.252.166	46134	128.3.41.120	25	-	-	-	tcp	SMTPurl::DottedURL	Embeded IP in URL http://183.81.171.242/c.jpg from  198.124.252.166	-	198.124.252.166	128.3.41.120	25	-	-	Notice::ACTION_LOG	3600.000000	-	-	-	-	-
-#close	2020-04-23-18-39-39
+1483418588.406004	CHhAvVGS1DHFjwGM9	198.124.252.166	46134	128.3.41.120	25	-	-	-	tcp	SMTPurl::DottedURL	Embeded IP in URL http://183.81.171.242/c.jpg"\x0d\x0avar from  198.124.252.166	-	198.124.252.166	128.3.41.120	25	-	-	Notice::ACTION_LOG	3600.000000	-	-	-	-	-
+#close	2020-10-22-18-32-00
