@@ -1,9 +1,9 @@
-module SMTPurl; 
+module SMTPurl;
 
-#redef exit_only_after_terminate = T; 
+redef exit_only_after_terminate = F;
 
-redef table_expire_interval = 1 secs ;
-redef table_incremental_step=20000 ; 
+redef table_expire_interval = 1secs;
+redef table_incremental_step = 20000;
 
 @load ./base-vars.zeek
 @load ./email-alerts-batch.zeek
@@ -25,7 +25,7 @@ redef table_incremental_step=20000 ;
 @load ./smtp-thresholds.zeek
 @load ./smtp-file-download.zeek
 
+@load ./smtp-decode-rfc2047.zeek
+
 @load ./configure-variables-in-this-file.zeek
-
-#@load ./smtp-notice-policies 
-
+#@load ./smtp-notice-policies

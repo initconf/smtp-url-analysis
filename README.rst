@@ -1,188 +1,204 @@
-===========================
+==================
 smtp-url-analysis
-===========================
+==================
 
-This package/policies have been updated to work with zeek (new broker framework). 
+Overview
+--------
 
-Primary scope of these zeek policies is to give more insights into smtp-analysis esp to track phishing events.
+The `smtp-url-analysis` package is a Zeek network security monitor suite designed for comprehensive SMTP and phishing analysis. It extracts URLs from email bodies, tracks subsequent clicks in HTTP traffic, and matches various email fields against malicious indicators. This package operates effectively in both cluster and standalone modes.
 
-This is a subset of phish-analysis repo and doesn't use any backed postgres database. So relieves the user from postgres dependency while getting basic phishing detection up and running very quickly.
+Features
+--------
 
-Following functionality are provided by the script
---------------------------------------------------
+URL Extraction and Logging
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-::
-        1) Works in a cluster and standalone mode
-        2) extracts URLs from Emails and logs them to smtpurl_links.log
-        3) Tracks these SMTP urls in http analyzer and logs if any of these SMTP URL has been clicked into a file smtp_clicked_urls.log
-        4) Reads a file for malicious indicators and generates an alert of any of those inddicators have a HIT in smtp traffic (see below for more details)
-        5) Generates alerts if suspicious strings are seen in URL (see below for details)
-        6) Generates  alerts if a SMTP URL is clicked resulting in a file download
+The `log-smtp-urls.zeek` script extracts URLs from email MIME bodies using regular expressions. All extracted links are recorded in `smtpurl_links.log`. This log includes fields such as timestamp, connection ID (uid and id), host, and the full URL.
 
+Clicked URL Tracking
+~~~~~~~~~~~~~~~~~~~~
+
+This functionality, provided by `smtp-url-clicks.zeek` and `log-clicked-urls.zeek`, monitors HTTP traffic for URLs previously seen in SMTP traffic. When a match occurs, it indicates a user clicked a link from an email. These events are logged to `smtp_clicked_urls.log`. The system uses bloom filters for efficient lookup of expired URLs and supports tracking referrer chains to provide context on the click path.
+
+Sensitive URI Detection
+~~~~~~~~~~~~~~~~~~~~~~~
+
+The `smtp-sensitive-uris.zeek` script identifies suspicious patterns in extracted URLs. It generates several notice types under the `SMTPurl` namespace:
+
+* `SensitiveURI`: The URL matches suspicious text patterns.
+* `DottedURL`: The URL contains an embedded IP address instead of a domain name.
+* `WatchedFileType`: The URL points to a suspicious file extension.
+* `BogusSiteURL`: The domain contains your organization's domain as a substring but is not an authorized subdomain, helping detect typosquatting or impersonation.
+* `Suspicious_File_URL`: A suspicious file URL was detected.
+* `Suspicious_Embedded_Text`: Suspicious text was found embedded in the URL.
+
+Malicious Indicator Matching
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The `smtp-malicious-indicators.zeek` script reads indicators from a tab-separated feed file using the Zeek Input Framework. It supports live updates without requiring a Zeek restart. The script matches indicators against various SMTP fields, including mailfrom, from, to, rcptto, reply_to, subject, relay IPs (path), attachments, and URLs.
+
+File Download Detection
+~~~~~~~~~~~~~~~~~~~~~~~
+
+The `smtp-file-download.zeek` script detects when a URL from an email is clicked and results in a file download of a watched MIME type. This generates an `SMTPurl::FileDownload` notice.
+
+HTTP Sensitive POST Detection
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The `http-sensitive_POSTs.zeek` script detects HTTP POST requests containing potential credentials, specifically when the request originates from a clicked phishing URL. This script uses the `SMTP` namespace.
+
+* `SMTP::SensitivePOST`: Detected a POST request containing password or credential data.
+* `SMTP::SensitivePasswd`: Detected credentials that match the site domain and meet specific password complexity requirements.
+
+SMTP Threshold Monitoring
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The `smtp-thresholds.zeek` script tracks sender activity, including recipient counts, subjects, and origins. It helps identify targeted attacks or mass mailing events. It supports whitelisting bulk senders via a feed file.
+
+RFC 2047 Subject Decoding
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The `smtp-decode-rfc2047.zeek` script decodes email subjects that use RFC 2047 encoding, ensuring that analysis and matching work on the intended text.
 
 Installation
 ------------
-	zkg install initconf/smtp-url-analysis
-	or
-	@load smtp-url-analysis/scripts
 
-Upgrade
--------
-	$ zkg upgrade zeek/initconf/smtp-url-analysis.git
-	The following packages will be UPGRADED:
-	  zeek/initconf/smtp-url-analysis.git (master)
+Install the package using the Zeek package manager:
 
-	Proceed? [Y/n] y
-	Running unit tests for "zeek/initconf/smtp-url-analysis.git"
-	all 7 tests successful
-	Upgraded "zeek/initconf/smtp-url-analysis.git" (master)
+.. code-block:: bash
 
+    zkg install smtp-url-analysis
 
-Detailed Notes:
----------------
+Configuration
+-------------
 
-All the configuration variables are in the following file. Please modify as needed:
+All configuration settings are located in `scripts/configure-variables-in-this-file.zeek`. You should review and modify these variables to suit your environment.
 
-        configure-variables-in-this-file.zeek
+Key variables include:
 
-        Note: Make sure you replace "site.org" in the file with your domain name(s)
+* `site_domain`: Your organization's primary domain pattern. This is a critical setting for detecting impersonation.
+* `site_sub_domains`: Patterns representing your legitimate subdomains.
+* `suspicious_file_types`: File extensions that should trigger a notice.
+* `suspicious_text_in_url`: Text patterns to flag within URLs.
+* `ignore_file_types`, `ignore_fp_links`, `ignore_site_links`: Used to suppress false positives.
+* `ignore_mail_originators`: Subnets to exclude from analysis, such as your internal mail relays.
+* `ignore_mailfroms`: Specific sender addresses or patterns to ignore.
+* `smtp_indicator_feed`: The file path for the malicious indicator feed.
+* `watch_mime_types`: MIME types to monitor for file downloads.
+* `batch_notice_email`: The email address for receiving notifications.
 
-
-Detail Alerts and descriptions: Following alerts are generated by the script:
-******************************************************************************
-
-Heuristics in smtp-malicious-indicators.zeek are used to flag known sensitve IoC's (sort of  your local smtp intel feed).
-
-This should generate following Kinds of notices:
-
-	- Malicious_MD5,
-	- Malicious_Attachment,
-	- Malicious_Indicator,
-	- Malicious_Mailfrom,
-	- Malicious_Mailto,
-	- Malicious_from,
-	- Malicious_reply_to,
-	- Malicious_subject,
-	- Malicious_rcptto,
-	- Malicious_path,
-	- Malicious_Decoded_Subject
-
-To activate these notices a sample smtp_malicious_indicators.out is provided in *"scripts/feeds"* directory.  You either need to populate that or *redef* smtp_indicator_feed in configure-variables-in-this-file.zeek:
-
-	redef Phish::smtp_indicator_feed = "/feeds/BRO-feeds/smtp_malicious_indicators.out" ;
-
-I have a cron job which scraps various email indicators (senders, subject, attachment, md5 hash etc) from various phish related feeds/notices and periodically creates this one file: /feeds/BRO-feeds/smtp_malicious_indicators.out. Bro reads this file using input-framework ie  new additions/append/removal to this file doesn't requre zeek to be restarted.
-
-Note:
-	1) Make sure the fields inthefile are <tab> seperated.
-	2) Make sure format of above feed file complies to:
-
-Here is a sample format
-
-	#fields indicator       description
-	"At Your Service" <service@site.org>	Some random comment
-	badsender@example.com	some random comment
-	f402e0713127617bda852609b426caff	some bad hash
-	HelpDesk	some bad subject
-
-
-Example alert:
-- Phish::Malicious_rcptto
-
-	Aug 24 11:26:06 CPLZuO3KTSDHx9mCC1      174.15.3.146    36906   18.3.1.10    25      tcp     Phish::Malicious_rcptto Malicious rectto :: [indicator=badsender@example.com, description=random test ], badsender@example.com	badsender@example.com	174.15.3.146 18.3.1.10	25      zeek     Notice::ACTION_EMAIL,Notice::ACTION_LOG 60.000000       F       -       -       -       -       -
-
-
-smtp-sensitive-uris.zeek will generate following alerts
-******************************************************
-
-	- SensitiveURI
-	- Dotted_URL
-	- Suspicious_File_URL
-	- Suspicious_Embedded_Text
-	- WatchedFileType
-	- BogusSiteURL
-
-
-Example Alert: BogusSiteURL
-***************************
-
-
-	1503599166.565855       CPLZuO3KTSDHx9mCC1      1.1.1.1    36906   2.2.2.2    25      -       -       -       tcp     Phish::BogusSiteURL     Very similar URL to site: http://www.site.org.blah.com/ from  1.1.1.1       -       1.1.1.1    2.2.2.2  25      -       zeek     Notice::ACTION_EMAIL,Notice::ACTION_LOG 3600.000000     F       -       -       -       -       -
-
-Again see configure-variables-in-this-file.zeek for tweaking and tunning
-
-
-Example Alert: FileDownload
-***************************
-
-Malicious file download: If a link in an email is clicked and results in a file download, this module can generate an alert of that as well.
-
-	1481499234.568566       CQa9SJ1adwAqlPDcKj      1.1.1.1      49067   46.43.34.31     80      FxrREO3dgcnSlAQZO8      application/x-dosexec   http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe  tcp     Phish::FileDownload     [ts=1481431889.562629, uid=CX5ROKa8g7WcfnET4, from=Bad Guy <random@gmail.com>, to=John Doe <jd@site.org>, subject=putty.exe, referrer=[]]        http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe  1.1.1.1      46.43.34.31     80      -       zeek     Notice::ACTION_LOG    3600.000000     F
-
-
-Example Alert: Phish::DottedURL
-*******************************
-
-Watch for URLs which only have IP address instead of domain names in them - another sign of maliciousness
-
-
-	1483418588.406004       CNDcli3Oo5dFqrJNhi      198.124.252.166 46134   128.3.41.120    25      -       -       -       tcp     Phish::DottedURL        Embeded IP in URL http://183.81.171.242/c.jpg from  198.124.252.166     -       198.124.252.166 128.3.41.120 25       -       zeek     Notice::ACTION_LOG      3600.000000     F
-
-
-Example Alert: SensitiveURI
-***************************
-
-Generates an Alert when a string in URL matches signature defined in "suspicious_text_in_url" available in configure-variables-in-this-file.zeek
-
-	1351714828.429308       CAmJxI1WlO5E5bWxCj      128.3.41.133    1277    209.139.197.113 25      -       -       -       tcp     Phish::SensitiveURI     Suspicious text embeded in URL http://www.foxterciaimobiliaria.com.br/corretor/565/ from  CAmJxI1WlO5E5bWxCj -128.3.41.133    209.139.197.113 25      -       zeek     Notice::ACTION_LOG      3600.000000     F
-
-
-Example Alert: Phish::WatchedFileType
-*************************************
-
-Simple regexp match on file extensions.  This is a noisy notice but useful for logging.  for critical files flagging use (3) above which is malicious file download based on mime-types.
-
-
-	1481431889.683598       CxGUuzDvWCpUdFI27       74.125.83.52    35030   128.3.41.120    25      -       -       -       tcp     Phish::WatchedFileType  Suspicious filetype embeded in URL http://the.earth.li/~sgtatham/putty/0.67/x86/putty.exe from  74.125.83.52 -74.125.83.52    128.3.41.120    25      -       zeek     Notice::ACTION_LOG      3600.000000     F
-
-
-Example Alert: SensitivePOST
-********************************
-
-This is generated when a URL in an email is clicked and results in a HTTP Post request. Often this is how passwords are transmitted on phishing sites.
-
-	1449085047.857802       COuvQB1n4JF3MILQUa      128.3.10.69     57106   67.227.172.217  80      -       -       -       tcp     Phish::HTTPSensitivePOST        Request: /cli/viewd0cument.dropboxxg.20gbfree.secure.verfy.l0gin.user0984987311111-config-l0gin-verfy.user763189713835763/validate.php - Data: type=G+Mail&username=me@me.com&tel=me&password=me&frmLogin:btnLogin1=&frmLogin:btnLogin1=      -       128.3.10.69     67.227.172.217  80      -       zeek     Notice::ACTION_LOG      3600.000000     F
-
-
-	Notice in alert below: username=me@me.com&tel=me&password=me
-
-Example Alert: SensitivePassword 
-********************************
-Alert is triggered when a password transmitted in HTTP SensitivePost is associated with a username related to sites' domain and the password meets the site's password complexity. 
-
-	1467998894.642754       Ce3m7XMMIuScmhJu9       128.3.2.5    64310   104.16.58.61    80      -       -       -       tcp     HTTP::SensitivePasswd   Request: /electacta/login_action.asp - Data: username=blach@lbl.gov&password=Popiszcze$11&rememberMe=on&role=editor&bypass=&rememberUser=1&ignoreWarning=0       -       128.3.2.5    104.16.58.61    80      -       zeek     Notice::ACTION_LOG      3600.000000     F
-
-	
-
-=========================
-Logging
-=========================
-
-This module should generate two different logs
-	- smtpurl_links.log
-	- smtp_clicked_urls.log
-
-
-smtpurl_links.log
+Notices Reference
 -----------------
-This is a log of all URLs extracted from emails. A sample looks like this
 
-smtp_clicked_urls.log
----------------------
-This is log of URLs from email which are 'clicked' on - ie which are later seen by the HTTP analyzer.
+The following table lists the notice types generated by this package.
 
-	#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	host	url	mail_ts	mail_uid	from	to	subject	referrer
-	#types	time	string	addr	port	addr	port	string	string	time	string	string	string	string	string
++-------------------------------------+---------------------------------------------------------+
+| Notice Type                         | Description                                             |
++=====================================+=========================================================+
+| `SMTPurl::SensitiveURI`             | URL matches suspicious text patterns                    |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::DottedURL`                | URL contains an IP address instead of a domain name     |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::WatchedFileType`          | URL contains a suspicious file extension                |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::BogusSiteURL`             | Potential typosquatting or impersonation detected       |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::Suspicious_File_URL`      | Suspicious file URL detected                            |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::Suspicious_Embedded_Text` | Suspicious embedded text detected                       |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::Malicious_MD5`            | Attachment MD5 matches a malicious indicator            |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::Malicious_Attachment`     | Attachment name matches a malicious indicator           |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::Malicious_Indicator`      | General malicious indicator match                       |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::Malicious_Mailfrom`       | Mailfrom field matches a malicious indicator            |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::Malicious_Mailto`         | Mailto field matches a malicious indicator              |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::Malicious_from`           | From field matches a malicious indicator                |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::Malicious_reply_to`       | Reply-to field matches a malicious indicator            |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::Malicious_subject`        | Subject matches a malicious indicator                   |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::Malicious_rcptto`         | Rcptto field matches a malicious indicator              |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::Malicious_Path`           | Relay path matches a malicious indicator                |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::Malicious_Decoded_Subject`| Decoded subject matches a malicious indicator           |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::Malicious_URL`             | URL matches a malicious indicator                       |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::FileDownload`             | Phishing URL click resulted in a file download          |
++-------------------------------------+---------------------------------------------------------+
+| `SMTP::SensitivePOST`               | HTTP POST containing potential credentials              |
++-------------------------------------+---------------------------------------------------------+
+| `SMTP::SensitivePasswd`             | Credential POST matching site domain and complexity     |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::TargetedSubject`          | Subject seen targeting specific users                   |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::bcc_HighVolumeSubject`    | High volume of BCC recipients for a subject             |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::SubjectMassMail`          | Subject associated with mass mailing                    |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::InternalBCCSender`        | Internal sender using high volume of BCC                |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::InternalMassMail`         | Internal sender performing mass mailing                 |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::ExternalBCCSender`        | External sender using high volume of BCC                |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::ExternalMassMail`         | External sender performing mass mailing                 |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::ManyMsgOrigins`           | Message originating from many different sources         |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::SMTP_Invalid_rcptto`      | Invalid recipient detected                              |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::URLClick`                 | URL from email was clicked in HTTP traffic              |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::RareURLClick`             | Rarely seen URL from email was clicked                  |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::HistoricallyNewAttacker`  | Historically new attacker detected                      |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::AddressSpoofer`           | Sender address spoofing detected                        |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::NameSpoofer`              | Sender name spoofing detected                           |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::HTTPSensitivePOST`        | Sensitive POST detected on tracked phishing destination |
++-------------------------------------+---------------------------------------------------------+
+| `SMTPurl::MsgBody`                  | Suspicious text with "click here" found in email body   |
++-------------------------------------+---------------------------------------------------------+
 
-	1449081495.794583	CtxTCR2Yer0FR1tIBg	131.243.195.188	61291	67.227.172.217	80	proposito.net	http://proposito.net/cli/viewd0cument.dropboxxg.20gbfree.secure.verfy.l0gin.user0984987311111-config-l0gin-verfy.user763189713835763.htm	1449081435.863394	CHhAvVGS1DHFjwGM9	Maggie Stoeva <mstoe101@gmail.com>	undisclosed-recipients:;	(2) Important Document from Maggie Stoeva	(empty)
-	1449085026.214280	CPhDKt12KQPUVbQz06	128.3.10.69	57064	67.227.172.217	80	proposito.net	http://proposito.net/cli/viewd0cument.dropboxxg.20gbfree.secure.verfy.l0gin.user0984987311111-config-l0gin-verfy.user763189713835763.htm	1449081435.863394	CHhAvVGS1DHFjwGM9	Maggie Stoeva <mstoe101@gmail.com>	undisclosed-recipients:;	(2) Important Document from Maggie Stoeva	(empty)
+Logs
+----
+
+This package produces the following log files:
+
+* `smtpurl_links.log`: Contains all URLs extracted from email bodies. Fields include ts, uid, id (conn_id), host, and url.
+* `smtp_clicked_urls.log`: Records instances where an extracted URL was later accessed via HTTP. Fields include ts, uid, id, host, url, mail_ts, mail_uid, from, to, subject, and referrer.
+
+Feed File Format
+----------------
+
+The malicious indicator feed is a tab-separated file with two primary fields: `indicator` and `description`. A sample feed file is located at `scripts/feeds/smtp_malicious_indicators.out`.
+
+Example format:
+
+.. code-block:: text
+
+    #fields indicator	description
+    badsender@example.com	Known phishing sender
+    f402e0713127617bda852609b426caff	Malicious attachment hash
+    HelpDesk	Suspicious subject line
+
+License
+-------
+
+This package is licensed under the BSD 3-Clause License.
+
+Copyright (c) Aashish Sharma and Lawrence Berkeley National Laboratory.
+
+Version: 3.0
+Tags: smtp, phish, urls, emails
+Author: Aashish Sharma
